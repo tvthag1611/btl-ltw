@@ -1,5 +1,6 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { PhotographIcon } from "@heroicons/react/solid";
+import axios from "axios";
 import { Fragment, useState } from "react";
 
 export default function Login() {
@@ -68,28 +69,28 @@ export default function Login() {
                   Đăng nhập
                 </Dialog.Title>
                 <form>
-                  <div class="mb-4">
+                  <div className="mb-4">
                     <input
-                      class="border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      className="border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       id="username"
                       type="text"
                       placeholder="Email"
                     />
                   </div>
-                  <div class="mb-4">
+                  <div className="mb-4">
                     <input
-                      class="border rounded-lg w-full py-3 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                      className="border rounded-lg w-full py-3 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
                       id="password"
                       type="password"
                       placeholder="Mật khẩu"
                     />
-                    <a href="#" class="font-bold hover:text-indigo-600">
+                    <a href="#" className="font-bold hover:text-indigo-600">
                       Quên mật khẩu?
                     </a>
                   </div>
                   <div>
                     <button
-                      class="bg-red-500 mt-4 w-full hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline"
+                      className="bg-red-500 mt-4 w-full hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline"
                       type="button"
                     >
                       Đăng nhập
@@ -101,7 +102,7 @@ export default function Login() {
 
                 <div>
                   <button
-                    class="bg-blue-500 w-full hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline"
+                    className="bg-blue-500 w-full hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline"
                     type="button"
                   >
                     Sign in with Facebook
@@ -110,7 +111,7 @@ export default function Login() {
 
                 <div>
                   <button
-                    class="border-2 border-gray-300 bg-white mt-4 w-full hover:border-gray-600 text-black font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline"
+                    className="border-2 border-gray-300 bg-white mt-4 w-full hover:border-gray-600 text-black font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline"
                     type="button"
                   >
                     Sign in with Google
