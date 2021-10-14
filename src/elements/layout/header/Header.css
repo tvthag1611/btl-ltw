@@ -33,3 +33,8 @@
   background-color: #cc3c3a;
   color: white;
 }
+
+.ant-badge-count {
+  top: 4px;
+  right: 20px;
+}

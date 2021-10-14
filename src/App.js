@@ -1,10 +1,14 @@
-import { Suspense, useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { BrowserRouter } from "react-router-dom";
 import "./App.css";
 import LoadingSpinner from "./elements/loading-spinner/LoadingSpinner";
-import RenderRoute from "./routes";
+import { Route, Routes } from "react-router";
 import LoginContext from "./context/loginContext";
 import "antd/dist/antd.css";
+import PrivateRoute from "./routes/PrivateRoute";
+const Layout = lazy(() => import("./elements/layout/Layout"));
+const Home = lazy(() => import("./components/home/Home"));
+const MyProfile = lazy(() => import("./components/me/MyProfile"));
 
 function App() {
   const [isOpenLogin, setIsOpenLogin] = useState(false);
@@ -21,7 +25,14 @@ function App() {
     <LoginContext.Provider value={loginValue}>
       <BrowserRouter>
         <Suspense fallback={<LoadingSpinner />}>
-          <RenderRoute />
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/me" element={<PrivateRoute />}>
+                <Route path="" element={<MyProfile />} />
+              </Route>
+            </Route>
+          </Routes>
         </Suspense>
       </BrowserRouter>
     </LoginContext.Provider>

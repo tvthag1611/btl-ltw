@@ -1,4 +1,4 @@
-import { Input } from "antd";
+import { Badge, Input } from "antd";
 import React, { useContext, useState } from "react";
 import {
   SearchOutlined,
@@ -13,19 +13,25 @@ import LoginContext from "../../../context/loginContext";
 import MyButton from "../../button/MyButton";
 import { Menu, Dropdown } from "antd";
 import "./Header.css";
-import { getToken } from "../../../utils/Common";
+import { getToken, removeUserLocal } from "../../../utils/Common";
 
 export default function Header() {
   const { setIsOpenLogin } = useContext(LoginContext);
   const isLogin = getToken();
   let navigate = useNavigate();
 
+  const logout = () => {
+    removeUserLocal();
+    navigate("/");
+    setIsOpenLogin(true);
+  };
+
   const menu = (
     <Menu>
       <Menu.Item icon={<UserOutlined />}>
-        <a href="/profile">Profile</a>
+        <a href="/me">Profile</a>
       </Menu.Item>
-      <Menu.Item icon={<LogoutOutlined />}>
+      <Menu.Item icon={<LogoutOutlined />} onClick={logout}>
         <a>Logout</a>
       </Menu.Item>
     </Menu>
@@ -44,14 +50,24 @@ export default function Header() {
       />
       {isLogin ? (
         <div className="flex">
-          <img
-            src={Notification}
-            alt=""
-            width="40px"
-            height="40px"
-            className="mx-3"
-          />
-          <img src={Chat} alt="" width="40px" height="40px" className="mx-3" />
+          <Badge count={99} overflowCount={10}>
+            <img
+              src={Notification}
+              alt=""
+              width="40px"
+              height="40px"
+              className="mx-3 cursor-pointer"
+            />
+          </Badge>
+          <Badge count={9} overflowCount={10}>
+            <img
+              src={Chat}
+              alt=""
+              width="40px"
+              height="40px"
+              className="mx-3 cursor-pointer"
+            />
+          </Badge>
           <Dropdown overlay={menu} trigger={["click"]}>
             <img
               src="https://upload.wikimedia.org/wikipedia/vi/1/1d/N%C6%A1i_n%C3%A0y_c%C3%B3_anh_-_Single_Cover.jpg"

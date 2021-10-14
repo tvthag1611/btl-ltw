@@ -20,21 +20,28 @@ export default function Login({ isOpen, setIsOpen }) {
 
   const { setIsOpenSignup } = useContext(LoginContext);
 
+  const resetForm = () => {
+    setAccLogin({
+      username: "",
+      password: "",
+    });
+  };
+
   const login = async () => {
     try {
-      const response = await axios.post("/user/login", accLogin);
+      const response = await axios.post("api/user/login", accLogin);
 
       if (response.statusText == "OK" && response.status == 200) {
         message.success("Login success");
         setUserLocal(response.data.data);
         closeModal();
         navigate("/");
+        resetForm();
       } else {
-        throw response.data.message;
+        message.error(response.data.mess);
       }
     } catch (error) {
-      console.log(error);
-      // message.error(error.message);
+      message.error(error.message);
     }
   };
 

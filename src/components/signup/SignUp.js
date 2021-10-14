@@ -1,5 +1,5 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { PhotographIcon } from "@heroicons/react/solid";
+import { message } from "antd";
 import axios from "axios";
 import { Fragment, useContext, useState } from "react";
 import Logo from "../../assets/logo/logo.svg";
@@ -7,6 +7,7 @@ import LoginContext from "../../context/loginContext";
 
 export default function Signup({ isOpen, setIsOpen }) {
   const [accSignup, setAccSignup] = useState({
+    username: "",
     email: "",
     password: "",
   });
@@ -16,7 +17,37 @@ export default function Signup({ isOpen, setIsOpen }) {
 
   const { setIsOpenLogin } = useContext(LoginContext);
 
-  const signup = () => {};
+  const resetForm = () => {
+    setAccSignup({
+      username: "",
+      email: "",
+      password: "",
+    });
+  };
+
+  const signup = async () => {
+    try {
+      const response = await axios.post("api/user/registeruser", accSignup);
+
+      if (response.statusText == "OK" && response.status == 200) {
+        message.success("Signup success");
+        closeModal();
+        setIsOpenLogin(true);
+        resetForm();
+      } else {
+        throw response.data.mess;
+      }
+    } catch (error) {
+      message.error(error.message);
+    }
+  };
+
+  const key_signup = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      signup();
+    }
+  };
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
@@ -61,13 +92,29 @@ export default function Signup({ isOpen, setIsOpen }) {
                 <img src={Logo} alt="" className="h-7 w-7 mx-auto mb-4" />
                 Đăng ký
               </Dialog.Title>
-              <form>
+              <form onKeyDown={key_signup}>
                 <div className="mb-4">
                   <input
                     className="border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     id="username"
                     type="text"
+                    placeholder="Username"
+                    value={accSignup.username}
+                    onChange={(e) => {
+                      setAccSignup({ ...accSignup, username: e.target.value });
+                    }}
+                  />
+                </div>
+                <div className="mb-4">
+                  <input
+                    className="border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="email"
+                    type="text"
                     placeholder="Email"
+                    value={accSignup.email}
+                    onChange={(e) => {
+                      setAccSignup({ ...accSignup, email: e.target.value });
+                    }}
                   />
                 </div>
                 <div className="mb-4">
@@ -76,12 +123,17 @@ export default function Signup({ isOpen, setIsOpen }) {
                     id="password"
                     type="password"
                     placeholder="Mật khẩu"
+                    value={accSignup.password}
+                    onChange={(e) => {
+                      setAccSignup({ ...accSignup, password: e.target.value });
+                    }}
                   />
                 </div>
                 <div>
                   <button
                     className="bg-red-500 mt-4 w-full hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline"
                     type="button"
+                    onClick={signup}
                   >
                     Đăng ký
                   </button>

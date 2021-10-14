@@ -1,17 +1,16 @@
-import React from "react";
-import { Navigate, Route, useLocation } from "react-router";
+import React, { useContext } from "react";
+import { Navigate, Outlet } from "react-router";
+import LoginContext from "../context/loginContext";
 import { getToken } from "../utils/Common";
 
-export default function PrivateRoute(props) {
+export default function PrivateRoute() {
   const auth = getToken();
 
-  const location = useLocation();
+  const { setIsOpenLogin } = useContext(LoginContext);
 
-  return auth ? (
-    <Route {...props} />
-  ) : (
-    <Navigate
-      to={`/login${"?from=" + encodeURIComponent(location.pathname)}`}
-    />
-  );
+  if (!auth) {
+    setIsOpenLogin(true);
+  }
+
+  return auth ? <Outlet /> : <Navigate to="/" />;
 }
