@@ -3,7 +3,7 @@ import { Routes } from "react-router";
 import WapperRoute from "./WapperRoute";
 const Layout = lazy(() => import("../elements/layout/Layout"));
 const Home = lazy(() => import("../components/home/Home"));
-const Login = lazy(() => import("../components/login/Login"));
+const DetailPicture = lazy(() => import("../components/detail/DetailPicture"));
 
 const routeList = [
   {
@@ -15,8 +15,9 @@ const routeList = [
         element: <Home />,
       },
       {
-        path: "login",
-        element: <Login />,
+        path: "detail",
+        element: <DetailPicture />,
+        auth: true,
       },
     ],
   },
@@ -26,7 +27,12 @@ const renderRouteList = (listRoutes) => {
   return (
     <>
       {listRoutes.map((route, index) => (
-        <WapperRoute key={`${index}`} path={route.path} element={route.element}>
+        <WapperRoute
+          key={`${index}`}
+          path={route.path}
+          element={route.element}
+          auth={route.auth}
+        >
           {route.children && renderRouteList(route.children)}
         </WapperRoute>
       ))}

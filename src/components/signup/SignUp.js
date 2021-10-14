@@ -6,11 +6,17 @@ import Logo from "../../assets/logo/logo.svg";
 import LoginContext from "../../context/loginContext";
 
 export default function Signup({ isOpen, setIsOpen }) {
+  const [accSignup, setAccSignup] = useState({
+    email: "",
+    password: "",
+  });
   function closeModal() {
     setIsOpen(false);
   }
 
   const { setIsOpenLogin } = useContext(LoginContext);
+
+  const signup = () => {};
 
   return (
     <Transition appear show={isOpen} as={Fragment}>

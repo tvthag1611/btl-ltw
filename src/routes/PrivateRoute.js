@@ -1,8 +1,9 @@
 import React from "react";
 import { Navigate, Route, useLocation } from "react-router";
+import { getToken } from "../utils/Common";
 
 export default function PrivateRoute(props) {
-  const auth = true;
+  const auth = getToken();
 
   const location = useLocation();
 

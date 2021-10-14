@@ -1,16 +1,49 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { PhotographIcon } from "@heroicons/react/solid";
+import { message } from "antd";
 import axios from "axios";
 import { Fragment, useContext, useState } from "react";
+import { useNavigate } from "react-router";
 import Logo from "../../assets/logo/logo.svg";
 import LoginContext from "../../context/loginContext";
+import { setUserLocal } from "../../utils/Common";
 
 export default function Login({ isOpen, setIsOpen }) {
+  const [accLogin, setAccLogin] = useState({
+    username: "",
+    password: "",
+  });
   function closeModal() {
     setIsOpen(false);
   }
 
+  let navigate = useNavigate();
+
   const { setIsOpenSignup } = useContext(LoginContext);
+
+  const login = async () => {
+    try {
+      const response = await axios.post("/user/login", accLogin);
+
+      if (response.statusText == "OK" && response.status == 200) {
+        message.success("Login success");
+        setUserLocal(response.data.data);
+        closeModal();
+        navigate("/");
+      } else {
+        throw response.data.message;
+      }
+    } catch (error) {
+      console.log(error);
+      // message.error(error.message);
+    }
+  };
+
+  const key_login = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      login();
+    }
+  };
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
@@ -55,13 +88,17 @@ export default function Login({ isOpen, setIsOpen }) {
                 <img src={Logo} alt="" className="h-7 w-7 mx-auto mb-4" />
                 Đăng nhập
               </Dialog.Title>
-              <form>
+              <form onKeyDown={key_login}>
                 <div className="mb-4">
                   <input
                     className="border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     id="username"
                     type="text"
-                    placeholder="Email"
+                    placeholder="Username"
+                    value={accLogin.username}
+                    onChange={(e) => {
+                      setAccLogin({ ...accLogin, username: e.target.value });
+                    }}
                   />
                 </div>
                 <div className="mb-4">
@@ -70,6 +107,10 @@ export default function Login({ isOpen, setIsOpen }) {
                     id="password"
                     type="password"
                     placeholder="Mật khẩu"
+                    value={accLogin.password}
+                    onChange={(e) => {
+                      setAccLogin({ ...accLogin, password: e.target.value });
+                    }}
                   />
                   <a href="#" className="font-bold hover:text-indigo-600">
                     Quên mật khẩu?
@@ -79,6 +120,7 @@ export default function Login({ isOpen, setIsOpen }) {
                   <button
                     className="bg-red-500 mt-4 w-full hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline"
                     type="button"
+                    onClick={login}
                   >
                     Đăng nhập
                   </button>

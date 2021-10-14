@@ -4,6 +4,7 @@ import "./App.css";
 import LoadingSpinner from "./elements/loading-spinner/LoadingSpinner";
 import RenderRoute from "./routes";
 import LoginContext from "./context/loginContext";
+import "antd/dist/antd.css";
 
 function App() {
   const [isOpenLogin, setIsOpenLogin] = useState(false);
