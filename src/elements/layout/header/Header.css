@@ -1,0 +1,13 @@
+.header {
+  height: 70px;
+  background: white;
+}
+
+.input-search {
+  height: 50px;
+  border-radius: 40px;
+  background: rgba(239, 239, 239, 1);
+  color: rgba(117, 117, 117, 1);
+  padding-left: 15px;
+  flex: 1;
+}

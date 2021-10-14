@@ -5,12 +5,12 @@ import { Fragment, useContext, useState } from "react";
 import Logo from "../../assets/logo/logo.svg";
 import LoginContext from "../../context/loginContext";
 
-export default function Login({ isOpen, setIsOpen }) {
+export default function Signup({ isOpen, setIsOpen }) {
   function closeModal() {
     setIsOpen(false);
   }
 
-  const { setIsOpenSignup } = useContext(LoginContext);
+  const { setIsOpenLogin } = useContext(LoginContext);
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
@@ -53,7 +53,7 @@ export default function Login({ isOpen, setIsOpen }) {
                 className="text-xl text-center font-medium leading-6 text-gray-900 mb-4"
               >
                 <img src={Logo} alt="" className="h-7 w-7 mx-auto mb-4" />
-                Đăng nhập
+                Đăng ký
               </Dialog.Title>
               <form>
                 <div className="mb-4">
@@ -71,16 +71,13 @@ export default function Login({ isOpen, setIsOpen }) {
                     type="password"
                     placeholder="Mật khẩu"
                   />
-                  <a href="#" className="font-bold hover:text-indigo-600">
-                    Quên mật khẩu?
-                  </a>
                 </div>
                 <div>
                   <button
                     className="bg-red-500 mt-4 w-full hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline"
                     type="button"
                   >
-                    Đăng nhập
+                    Đăng ký
                   </button>
                 </div>
               </form>
@@ -105,15 +102,15 @@ export default function Login({ isOpen, setIsOpen }) {
                 </button>
               </div>
               <div className="text-center font-bold my-6">
-                Chưa tham gia Hahahihi?{" "}
+                Đã là thành viên?{" "}
                 <a
                   className="hover:text-indigo-600 cursor-pointer"
                   onClick={() => {
                     closeModal();
-                    setIsOpenSignup(true);
+                    setIsOpenLogin(true);
                   }}
                 >
-                  Đăng ký
+                  Đăng nhập
                 </a>
               </div>
             </div>

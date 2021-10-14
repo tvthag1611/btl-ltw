@@ -1,12 +1,29 @@
-import logo from "./logo.svg";
+import { Suspense, useState } from "react";
+import { BrowserRouter } from "react-router-dom";
 import "./App.css";
-import Login from "./components/login/Login";
+import LoadingSpinner from "./elements/loading-spinner/LoadingSpinner";
+import RenderRoute from "./routes";
+import LoginContext from "./context/loginContext";
 
 function App() {
+  const [isOpenLogin, setIsOpenLogin] = useState(false);
+  const [isOpenSignup, setIsOpenSignup] = useState(false);
+
+  const loginValue = {
+    isOpenLogin,
+    setIsOpenLogin,
+    isOpenSignup,
+    setIsOpenSignup,
+  };
+
   return (
-    <div className="App">
-      <Login />
-    </div>
+    <LoginContext.Provider value={loginValue}>
+      <BrowserRouter>
+        <Suspense fallback={<LoadingSpinner />}>
+          <RenderRoute />
+        </Suspense>
+      </BrowserRouter>
+    </LoginContext.Provider>
   );
 }
 
