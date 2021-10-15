@@ -29,19 +29,24 @@ export default function Login({ isOpen, setIsOpen }) {
 
   const login = async () => {
     try {
-      const response = await axios.post("api/user/login", accLogin);
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/user/login`,
+        accLogin
+      );
 
-      if (response.statusText == "OK" && response.status == 200) {
+      console.log(response);
+
+      if (response.data && response.data.status === "success") {
         message.success("Login success");
         setUserLocal(response.data.data);
         closeModal();
         navigate("/");
         resetForm();
       } else {
-        message.error(response.data.mess);
+        throw response.data.mess;
       }
-    } catch (error) {
-      message.error(error.message);
+    } catch (e) {
+      message.error(e.message);
     }
   };
 
