@@ -9,6 +9,7 @@ import PrivateRoute from "./routes/PrivateRoute";
 const Layout = lazy(() => import("./elements/layout/Layout"));
 const Home = lazy(() => import("./components/home/Home"));
 const MyProfile = lazy(() => import("./components/me/MyProfile"));
+const CreatePicture = lazy(() => import("./components/create/CreatePicture"));
 
 function App() {
   const [isOpenLogin, setIsOpenLogin] = useState(false);
@@ -28,6 +29,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Layout />}>
               <Route path="/" element={<Home />} />
+              <Route path="/create" element={<CreatePicture />} />
               <Route path="/me" element={<PrivateRoute />}>
                 <Route path="" element={<MyProfile />} />
               </Route>

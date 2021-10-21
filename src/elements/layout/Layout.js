@@ -3,6 +3,7 @@ import { Outlet } from "react-router";
 import Login from "../../components/login/Login";
 import Signup from "../../components/signup/SignUp";
 import LoginContext from "../../context/loginContext";
+import AddNewBtn from "../button/AddNewBtn";
 import Header from "./header/Header";
 import "./Layout.css";
 
@@ -17,6 +18,7 @@ export default function Layout() {
         <Outlet />
         <Login isOpen={isOpenLogin} setIsOpen={setIsOpenLogin} />
         <Signup isOpen={isOpenSignup} setIsOpen={setIsOpenSignup} />
+        <AddNewBtn />
       </div>
     </div>
   );

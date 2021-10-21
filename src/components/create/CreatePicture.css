@@ -1,0 +1,25 @@
+.create-picture {
+  width: 80%;
+  box-shadow: 0px 7px 29px rgba(100, 100, 111, 0.2);
+  border-radius: 20px;
+  padding: 30px;
+}
+
+.create-picture h1 {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.upload-create {
+  background: #efefef;
+  border-radius: 20px;
+}
+
+.create-picture textarea {
+  resize: none;
+}
+
+.ant-tag {
+  display: inline-flex;
+  align-items: center;
+}
