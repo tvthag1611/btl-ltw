@@ -3,10 +3,12 @@ import {
   PlusOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
-import { message, Tag, Tooltip, Upload, Select } from "antd";
+import { message, Tag, Tooltip, Upload, Select, Input, Button } from "antd";
+import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import MyButton from "../../elements/button/MyButton";
+import { getToken } from "../../utils/Common";
 import "./CreatePicture.css";
 
 const { Option } = Select;
@@ -14,11 +16,14 @@ const { Option } = Select;
 export default function CreatePicture() {
   const navigate = useNavigate();
   const [postDesignCreate, setPostDesignCreate] = useState({
+    id: 0,
     title: "",
     description: "",
+    loveCount: 0,
+    urlPicture: null,
+    urlDesign: null,
     tags: [],
-    fileDesign: null,
-    imageDescription: null,
+    price: 0,
   });
 
   const onChangeTag = (value) => {
@@ -47,15 +52,34 @@ export default function CreatePicture() {
   const handleChange = ({ file }) => {
     setPostDesignCreate({
       ...postDesignCreate,
-      imageDescription: file.originFileObj,
+      urlPicture: file.originFileObj,
     });
   };
 
   const handleChangeFile = ({ file }) => {
     setPostDesignCreate({
       ...postDesignCreate,
-      fileDesign: file.originFileObj,
+      urlDesign: file.originFileObj,
     });
+  };
+
+  const onCreateNewPicture = async () => {
+    const formData = new FormData();
+    formData.append("titlePost", postDesignCreate.title);
+    formData.append("descriptionPost", postDesignCreate.description);
+    formData.append("urlDesign", postDesignCreate.urlDesign);
+    formData.append("urlPicture", postDesignCreate.urlPicture);
+    formData.append("price", postDesignCreate.price);
+    postDesignCreate.tags.map((tag) => formData.append("tags", tag));
+    const res = await axios.post("/post/addPost", formData, {
+      headers: {
+        Authorization: `Beaser ${getToken()}`,
+      },
+    });
+    if (res.status === 200 && res.statusText === "OK") {
+      message.success("Tạo Design mới thành công !");
+      navigate("/");
+    }
   };
 
   return (
@@ -67,18 +91,15 @@ export default function CreatePicture() {
             onClick={() => navigate(-1)}
           />
           <h1>Tạo mới Design</h1>
-          <MyButton
-            className="btn-red"
-            onClick={() => console.log(postDesignCreate)}
-          >
+          <MyButton className="btn-red" onClick={onCreateNewPicture}>
             Tạo mới
           </MyButton>
         </div>
         <form className="flex flex-row">
           <div className="upload-create flex-1 mr-5 flex items-center justify-center">
-            {postDesignCreate.imageDescription ? (
+            {postDesignCreate.urlPicture ? (
               <img
-                src={URL.createObjectURL(postDesignCreate.imageDescription)}
+                src={URL.createObjectURL(postDesignCreate.urlPicture)}
                 alt=""
                 className="w-full h-full object-cover"
               />
@@ -149,7 +170,29 @@ export default function CreatePicture() {
             <div className="text-gray-400 mt-2">
               Lưu ý, bạn có thể upload file nén, ai, psd, ...
             </div>
-            <div>Giá cả: 1000000đ</div>
+            <div>Giá cả: {postDesignCreate.price}đ</div>
+            <div className="flex flex-row">
+              <Input
+                placeholder="Điền giá"
+                value={postDesignCreate.price}
+                prefix={<strong>VNĐ</strong>}
+                onChange={(e) =>
+                  setPostDesignCreate({
+                    ...postDesignCreate,
+                    price: e.target.value,
+                  })
+                }
+              />
+              <Button
+                type="primary"
+                className="ml-3"
+                onClick={() =>
+                  setPostDesignCreate({ ...postDesignCreate, price: 0 })
+                }
+              >
+                Free
+              </Button>
+            </div>
           </div>
         </form>
       </div>

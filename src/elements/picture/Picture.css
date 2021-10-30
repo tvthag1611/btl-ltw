@@ -7,3 +7,7 @@
   font-weight: bold;
   margin: 10px 0px;
 }
+
+.picture:hover {
+  cursor: pointer;
+}

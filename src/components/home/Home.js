@@ -21,35 +21,65 @@ export default function Home() {
       <div className="flex flex-col">
         {posts.map((post, index) => {
           if (index % 5 === 0) {
-            return <Picture title={post.titlePost} thumnail={post.urlDesign} />;
+            return (
+              <Picture
+                title={post.titlePost}
+                thumnail={post.urlPicture}
+                id={post.idPost}
+              />
+            );
           }
         })}
       </div>
       <div className="flex flex-col">
         {posts.map((post, index) => {
           if (index % 5 === 1) {
-            return <Picture title={post.titlePost} thumnail={post.urlDesign} />;
+            return (
+              <Picture
+                title={post.titlePost}
+                thumnail={post.urlPicture}
+                id={post.idPost}
+              />
+            );
           }
         })}
       </div>
       <div className="flex flex-col">
         {posts.map((post, index) => {
           if (index % 5 === 2) {
-            return <Picture title={post.titlePost} thumnail={post.urlDesign} />;
+            return (
+              <Picture
+                title={post.titlePost}
+                thumnail={post.urlPicture}
+                id={post.idPost}
+              />
+            );
           }
         })}
       </div>
       <div className="flex flex-col">
         {posts.map((post, index) => {
           if (index % 5 === 3) {
-            return <Picture title={post.titlePost} thumnail={post.urlDesign} />;
+            return (
+              <Picture
+                title={post.titlePost}
+                thumnail={post.urlPicture}
+                id={post.idPost}
+              />
+            );
           }
         })}
       </div>
       <div className="flex flex-col">
         {posts.map((post, index) => {
           if (index % 5 === 4) {
-            return <Picture title={post.titlePost} thumnail={post.urlDesign} />;
+            return (
+              <Picture
+                title={post.titlePost}
+                thumnail={post.urlPicture}
+                id={post.idPost}
+              />
+            );
           }
         })}
       </div>

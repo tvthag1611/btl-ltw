@@ -1,0 +1,7 @@
+.design-detail {
+  padding: 0;
+}
+
+.design-detail__image {
+  border-radius: 20px 0px 0px 20px;
+}

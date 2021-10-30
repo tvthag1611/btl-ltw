@@ -10,6 +10,7 @@ const Layout = lazy(() => import("./elements/layout/Layout"));
 const Home = lazy(() => import("./components/home/Home"));
 const MyProfile = lazy(() => import("./components/me/MyProfile"));
 const CreatePicture = lazy(() => import("./components/create/CreatePicture"));
+const DesignDetail = lazy(() => import("./components/design/DesignDetail"));
 
 function App() {
   const [isOpenLogin, setIsOpenLogin] = useState(false);
@@ -29,8 +30,11 @@ function App() {
           <Routes>
             <Route path="/" element={<Layout />}>
               <Route path="/" element={<Home />} />
-              <Route path="/create" element={<CreatePicture />} />
-              <Route path="/me" element={<PrivateRoute />}>
+              <Route path="" element={<PrivateRoute />}>
+                <Route path="create" element={<CreatePicture />} />
+              </Route>
+              <Route path="post/:id" element={<DesignDetail />} />
+              <Route path="" element={<PrivateRoute />}>
                 <Route path="" element={<MyProfile />} />
               </Route>
             </Route>
