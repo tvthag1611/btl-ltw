@@ -2,6 +2,7 @@
   "name": "btl-ltw",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://127.0.0.1:8081/api",
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
     "@craco/craco": "^6.3.0",

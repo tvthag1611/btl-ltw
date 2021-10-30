@@ -1,48 +1,99 @@
-import { PlusOutlined, UploadOutlined } from "@ant-design/icons";
-import { Button, Input, message, Tag, Tooltip, Upload } from "antd";
+import {
+  ArrowLeftOutlined,
+  PlusOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
+import { message, Tag, Tooltip, Upload, Select } from "antd";
 import React, { useState } from "react";
+import { useNavigate } from "react-router";
 import MyButton from "../../elements/button/MyButton";
 import "./CreatePicture.css";
+
+const { Option } = Select;
+
 export default function CreatePicture() {
-  const [tags, setTags] = useState([
-    "Unremovablsdsfsdfsdsfsdfsdfsde",
-    "Tag 2",
-    "Tag 3",
-  ]);
+  const navigate = useNavigate();
+  const [postDesignCreate, setPostDesignCreate] = useState({
+    title: "",
+    description: "",
+    tags: [],
+    fileDesign: null,
+    imageDescription: null,
+  });
 
-  const [isAddTag, setIsAddTag] = useState(false);
-
-  const handleClose = (removedTag) => {
-    setTags(tags.filter((tag) => tag !== removedTag));
+  const onChangeTag = (value) => {
+    setPostDesignCreate({
+      ...postDesignCreate,
+      tags: value,
+    });
   };
 
-  const props = {
-    name: "file",
-    action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
-    headers: {
-      authorization: "authorization-text",
-    },
-    onChange(info) {
-      if (info.file.status !== "uploading") {
-        console.log(info.file, info.fileList);
-      }
-      if (info.file.status === "done") {
-        message.success(`${info.file.name} file uploaded successfully`);
-      } else if (info.file.status === "error") {
-        message.error(`${info.file.name} file upload failed.`);
-      }
-    },
+  const beforeUploadImage = (file) => {
+    if (file.type !== "image/png" && file.type !== "image/jpeg") {
+      message.error(`${file.name} is not a image file`);
+    }
+    return file.type === "image/png" || file.type === "image/jpeg"
+      ? true
+      : Upload.LIST_IGNORE;
+  };
+
+  const handleChangeInput = (e) => {
+    setPostDesignCreate({
+      ...postDesignCreate,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleChange = ({ file }) => {
+    setPostDesignCreate({
+      ...postDesignCreate,
+      imageDescription: file.originFileObj,
+    });
+  };
+
+  const handleChangeFile = ({ file }) => {
+    setPostDesignCreate({
+      ...postDesignCreate,
+      fileDesign: file.originFileObj,
+    });
   };
 
   return (
     <div className="py-5">
       <div className="create-picture mx-auto">
-        <div className="flex flex-row items-center justify-between">
+        <div className="flex flex-row items-center justify-between mb-2">
+          <ArrowLeftOutlined
+            className="text-xl cursor-pointer"
+            onClick={() => navigate(-1)}
+          />
           <h1>Tạo mới Design</h1>
-          <MyButton className="btn-red">Tạo mới</MyButton>
+          <MyButton
+            className="btn-red"
+            onClick={() => console.log(postDesignCreate)}
+          >
+            Tạo mới
+          </MyButton>
         </div>
         <form className="flex flex-row">
-          <div className="upload-create flex-1 mr-5"></div>
+          <div className="upload-create flex-1 mr-5 flex items-center justify-center">
+            {postDesignCreate.imageDescription ? (
+              <img
+                src={URL.createObjectURL(postDesignCreate.imageDescription)}
+                alt=""
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <Upload
+                className="text-center"
+                onChange={handleChange}
+                showUploadList={false}
+                beforeUpload={beforeUploadImage}
+              >
+                <UploadOutlined />
+                <p>Nhấp vào đây để tải lên ảnh miêu tả</p>
+              </Upload>
+            )}
+          </div>
           <div className="flex-1">
             <div className="flex flex-row items-center mb-3">
               <img
@@ -63,6 +114,8 @@ export default function CreatePicture() {
               id="newTitle"
               type="text"
               placeholder="Nhập tiêu đề"
+              name="title"
+              onChange={handleChangeInput}
             />
             <label htmlFor="newDesciption">Miêu tả</label>
             <textarea
@@ -70,53 +123,25 @@ export default function CreatePicture() {
               id="newDesciption"
               placeholder="Nhập tiêu đề"
               rows="6"
+              name="description"
+              onChange={handleChangeInput}
             />
-            {isAddTag && (
-              <input
-                className="border rounded-full w-full py-3 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                placeholder="Nhập tag mới"
-              />
-            )}
-            <label htmlFor="newTag" className="mr-3">
-              Tag:
-            </label>
-            {tags.map((tag, index) => {
-              const isLongTag = tag.length > 20;
-
-              const tagElem = (
-                <Tag
-                  className="edit-tag"
-                  key={tag}
-                  closable
-                  onClose={() => handleClose(tag)}
-                >
-                  <span>{isLongTag ? `${tag.slice(0, 20)}...` : tag}</span>
-                </Tag>
-              );
-              return isLongTag ? (
-                <Tooltip title={tag} key={tag}>
-                  {tagElem}
-                </Tooltip>
-              ) : (
-                tagElem
-              );
-            })}
-            <Tag
-              className="cursor-pointer"
-              key="newTag"
-              onClick={() => setIsAddTag(!isAddTag)}
+            <label htmlFor="newTag">Tag</label>
+            <Select
+              mode="tags"
+              style={{ width: "100%" }}
+              placeholder="Tags Mode"
+              onChange={onChangeTag}
             >
-              <span className="flex items-center">
-                <PlusOutlined className="mr-1" />
-                New Tag
-              </span>
-            </Tag>
+              {postDesignCreate.tags.map((tag, index) => (
+                <Option key={index}>{tag}</Option>
+              ))}
+            </Select>
             <br />
             <div className="mb-3"></div>
             <label htmlFor="newDesciption">Upload Design</label>
             <br />
-            <Upload {...props}>
+            <Upload onChange={handleChangeFile}>
               <MyButton icon={<UploadOutlined />} className="btn-red mt-2">
                 Upload
               </MyButton>
@@ -124,6 +149,7 @@ export default function CreatePicture() {
             <div className="text-gray-400 mt-2">
               Lưu ý, bạn có thể upload file nén, ai, psd, ...
             </div>
+            <div>Giá cả: 1000000đ</div>
           </div>
         </form>
       </div>

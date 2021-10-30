@@ -29,10 +29,7 @@ export default function Login({ isOpen, setIsOpen }) {
 
   const login = async () => {
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/user/login`,
-        accLogin
-      );
+      const response = await axios.post(`/user/login`, accLogin);
 
       console.log(response);
 

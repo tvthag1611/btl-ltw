@@ -27,7 +27,7 @@ export default function Signup({ isOpen, setIsOpen }) {
 
   const signup = async () => {
     try {
-      const response = await axios.post("api/user/registeruser", accSignup);
+      const response = await axios.post("/user/registeruser", accSignup);
 
       if (response.statusText == "OK" && response.status == 200) {
         message.success("Signup success");
