@@ -5,7 +5,7 @@ import {
 } from "@ant-design/icons";
 import { message, Tag, Tooltip, Upload, Select, Input, Button } from "antd";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import MyButton from "../../elements/button/MyButton";
 import { getToken } from "../../utils/Common";
@@ -25,6 +25,17 @@ export default function CreatePicture() {
     tags: [],
     price: 0,
   });
+
+  const [alltag, setAlltag] = useState([]);
+
+  const getAllTags = async () => {
+    const res = await axios.get("/tags/getAllTags");
+    setAlltag(res.data);
+  };
+
+  useEffect(() => {
+    getAllTags();
+  }, []);
 
   const onChangeTag = (value) => {
     setPostDesignCreate({
@@ -154,8 +165,8 @@ export default function CreatePicture() {
               placeholder="Tags Mode"
               onChange={onChangeTag}
             >
-              {postDesignCreate.tags.map((tag, index) => (
-                <Option key={index}>{tag}</Option>
+              {alltag.map((tag) => (
+                <Option key={tag}>{tag}</Option>
               ))}
             </Select>
             <br />

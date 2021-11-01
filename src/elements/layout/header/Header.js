@@ -7,13 +7,14 @@ import {
 } from "@ant-design/icons";
 import { useNavigate } from "react-router";
 import Logo from "../../../assets/logo/logo.svg";
-import Notification from "../../../assets/navbar/noti.svg";
 import Chat from "../../../assets/navbar/chat.svg";
 import LoginContext from "../../../context/loginContext";
 import MyButton from "../../button/MyButton";
 import { Menu, Dropdown } from "antd";
 import "./Header.css";
 import { getToken, removeUserLocal } from "../../../utils/Common";
+import Search from "../../../components/search/Search";
+import Notification from "../../../components/notification/Notification";
 
 export default function Header() {
   const { setIsOpenLogin } = useContext(LoginContext);
@@ -38,27 +39,15 @@ export default function Header() {
   );
 
   return (
-    <div className="header fixed items-center flex flex-row w-full">
+    <div className="header fixed items-center flex flex-row w-full" id="header">
       <img src={Logo} alt="" width="50px" height="50px" className="mx-3" />
       <MyButton className="mr-3 btn-black" onClick={() => navigate("/")}>
         Trang chủ
       </MyButton>
-      <Input
-        placeholder="Search"
-        className="input-search"
-        prefix={<SearchOutlined />}
-      />
+      <Search />
       {isLogin ? (
         <div className="flex">
-          <Badge count={99} overflowCount={10}>
-            <img
-              src={Notification}
-              alt=""
-              width="40px"
-              height="40px"
-              className="mx-3 cursor-pointer"
-            />
-          </Badge>
+          <Notification />
           <Badge count={9} overflowCount={10}>
             <img
               src={Chat}

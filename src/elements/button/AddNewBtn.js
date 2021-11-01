@@ -11,7 +11,7 @@ export default function AddNewBtn() {
   };
 
   return (
-    <button className="btn-add" onClick={clickAdd}>
+    <button className="btn-add bg-yellow-500 text-white" onClick={clickAdd}>
       <PlusOutlined style={{ fontSize: 24 }} />
     </button>
   );

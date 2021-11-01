@@ -30,7 +30,11 @@ export default function DesignDetail() {
 
   return (
     <div className="py-5">
-      <div className="create-picture design-detail mx-auto">
+      <div className="create-picture design-detail mx-auto relative">
+        <ArrowLeftOutlined
+          className="text-xl cursor-pointer absolute -left-10 top-3"
+          onClick={() => navigate(-1)}
+        />
         <form className="flex flex-row">
           <div className="upload-create flex-1 flex items-center justify-center">
             <img
