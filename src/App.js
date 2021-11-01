@@ -35,7 +35,7 @@ function App() {
               </Route>
               <Route path="post/:id" element={<DesignDetail />} />
               <Route path="" element={<PrivateRoute />}>
-                <Route path="" element={<MyProfile />} />
+                <Route path="me" element={<MyProfile />} />
               </Route>
             </Route>
           </Routes>
