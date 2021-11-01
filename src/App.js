@@ -8,7 +8,7 @@ import "antd/dist/antd.css";
 import PrivateRoute from "./routes/PrivateRoute";
 const Layout = lazy(() => import("./elements/layout/Layout"));
 const Home = lazy(() => import("./components/home/Home"));
-const MyProfile = lazy(() => import("./components/me/MyProfile"));
+const MyProfile = lazy(() => import("./components/profile/MyProfile"));
 const CreatePicture = lazy(() => import("./components/create/CreatePicture"));
 const DesignDetail = lazy(() => import("./components/design/DesignDetail"));
 
@@ -29,14 +29,12 @@ function App() {
         <Suspense fallback={<LoadingSpinner />}>
           <Routes>
             <Route path="/" element={<Layout />}>
+              <Route path="user/:id" element={<MyProfile />} />
               <Route path="/" element={<Home />} />
               <Route path="" element={<PrivateRoute />}>
                 <Route path="create" element={<CreatePicture />} />
               </Route>
               <Route path="post/:id" element={<DesignDetail />} />
-              <Route path="" element={<PrivateRoute />}>
-                <Route path="me" element={<MyProfile />} />
-              </Route>
             </Route>
           </Routes>
         </Suspense>

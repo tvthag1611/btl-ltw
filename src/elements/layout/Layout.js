@@ -15,6 +15,7 @@ export default function Layout() {
     <div>
       <Header />
       <div className="layout-app">
+        <div id="page-mask"></div>
         <Outlet />
         <Login isOpen={isOpenLogin} setIsOpen={setIsOpenLogin} />
         <Signup isOpen={isOpenSignup} setIsOpen={setIsOpenSignup} />

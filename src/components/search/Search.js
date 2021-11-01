@@ -66,12 +66,22 @@ const DropdownSearch = () => {
 };
 
 export default function Search() {
+  const showSearch = (visible) => {
+    const pageMask = document.getElementById("page-mask");
+    if (visible) {
+      pageMask.style.display = "block";
+    } else {
+      pageMask.style.display = "none";
+    }
+  };
+
   return (
     <Dropdown
       overlay={<DropdownSearch />}
       trigger={["click"]}
       getPopupContainer={() => document.getElementById("header")}
       placement="bottomCenter"
+      onVisibleChange={showSearch}
     >
       <Input
         placeholder="Search"

@@ -30,7 +30,7 @@ export default function Header() {
   const menu = (
     <Menu>
       <Menu.Item icon={<UserOutlined />}>
-        <a href="/me">Profile</a>
+        <a href="/user/2">Profile</a>
       </Menu.Item>
       <Menu.Item icon={<LogoutOutlined />} onClick={logout}>
         <a>Logout</a>
@@ -57,7 +57,11 @@ export default function Header() {
               className="mx-3 cursor-pointer"
             />
           </Badge>
-          <Dropdown overlay={menu} trigger={["click"]}>
+          <Dropdown
+            overlay={menu}
+            trigger={["click"]}
+            getPopupContainer={() => document.getElementById("header")}
+          >
             <img
               src="https://upload.wikimedia.org/wikipedia/vi/1/1d/N%C6%A1i_n%C3%A0y_c%C3%B3_anh_-_Single_Cover.jpg"
               alt=""
