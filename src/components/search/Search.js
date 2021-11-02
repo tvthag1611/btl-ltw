@@ -19,16 +19,22 @@ const DropdownSearch = () => {
   return (
     <div className="w-full bg-white shadow-lg rounded-lg p-6">
       <p className="font-bold">Tìm kiếm gần đây</p>
-      <Tag>ashdjksdjkfsd</Tag>
-      <Tag>ashdjksdjkfsd</Tag>
-      <Tag>ashdjksdjkfsd</Tag>
+      <Tag className="cursor-pointer" color="blue">
+        Ảnh cưới
+      </Tag>
+      <Tag className="cursor-pointer" color="red">
+        Poster
+      </Tag>
+      <Tag className="cursor-pointer" color="cyan">
+        Nguyen Phuong Thao
+      </Tag>
       <p className="font-bold mt-4">Tìm kiếm theo tag</p>
       <Select mode="tags" style={{ width: "100%" }} placeholder="Tags Mode">
         {alltag.map((tag) => (
           <Option key={tag}>{tag}</Option>
         ))}
       </Select>
-      <p className="font-bold mt-4">Phổ biến trên Hihihaha</p>
+      <p className="font-bold mt-4">Gợi ý trên trên Hihihaha</p>
       <div className="flex flex-row">
         <div className="w-1/3 rounded-xl relative h-40 cursor-pointer mr-5">
           <img

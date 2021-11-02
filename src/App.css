@@ -1,3 +1,12 @@
 .inset-0 {
   background: rgb(0, 0, 0, 20%);
 }
+
+button:disabled {
+  background-color: rgb(61, 0, 0);
+}
+
+button:disabled:hover {
+  background-color: rgb(61, 0, 0);
+  cursor: no-drop;
+}
