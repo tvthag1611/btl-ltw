@@ -39,7 +39,10 @@ export default function Header() {
   );
 
   return (
-    <div className="header fixed items-center flex flex-row w-full" id="header">
+    <div
+      className="header fixed items-center flex flex-row w-full border border-0 border-b-1 border-gray-300"
+      id="header"
+    >
       <img src={Logo} alt="" width="50px" height="50px" className="mx-3" />
       <MyButton className="mr-3 btn-black" onClick={() => navigate("/")}>
         Trang chủ

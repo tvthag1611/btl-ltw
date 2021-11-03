@@ -147,15 +147,17 @@ export default function CreatePicture() {
               type="text"
               placeholder="Nhập tiêu đề"
               name="title"
+              value={postDesignCreate.title}
               onChange={handleChangeInput}
             />
             <label htmlFor="newDesciption">Miêu tả</label>
             <textarea
               className="border rounded-lg w-full py-3 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
               id="newDesciption"
-              placeholder="Nhập tiêu đề"
+              placeholder="Nhập miêu tả"
               rows="6"
               name="description"
+              value={postDesignCreate.description}
               onChange={handleChangeInput}
             />
             <label htmlFor="newTag">Tag</label>

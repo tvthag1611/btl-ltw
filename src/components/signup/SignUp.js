@@ -10,7 +10,14 @@ export default function Signup({ isOpen, setIsOpen }) {
     username: "",
     email: "",
     password: "",
+    fullname: "",
+    address: "",
+    dob: "",
+    phone: "",
   });
+
+  const [step, setStep] = useState(1);
+
   function closeModal() {
     setIsOpen(false);
   }
@@ -22,6 +29,10 @@ export default function Signup({ isOpen, setIsOpen }) {
       username: "",
       email: "",
       password: "",
+      fullname: "",
+      address: "",
+      dob: "",
+      phone: "",
     });
   };
 
@@ -39,13 +50,6 @@ export default function Signup({ isOpen, setIsOpen }) {
       }
     } catch (error) {
       message.error(error.message);
-    }
-  };
-
-  const key_signup = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      signup();
     }
   };
 
@@ -92,65 +96,131 @@ export default function Signup({ isOpen, setIsOpen }) {
                 <img src={Logo} alt="" className="h-7 w-7 mx-auto mb-4" />
                 Đăng ký
               </Dialog.Title>
-              <form onKeyDown={key_signup}>
-                <div className="mb-4">
-                  <input
-                    className="border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="username"
-                    type="text"
-                    placeholder="Username"
-                    value={accSignup.username}
-                    onChange={(e) => {
-                      setAccSignup({ ...accSignup, username: e.target.value });
-                    }}
-                  />
-                </div>
-                <div className="mb-4">
-                  <input
-                    className="border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="email"
-                    type="text"
-                    placeholder="Email"
-                    value={accSignup.email}
-                    onChange={(e) => {
-                      setAccSignup({ ...accSignup, email: e.target.value });
-                    }}
-                  />
-                </div>
-                <div className="mb-4">
-                  <input
-                    className="border rounded-lg w-full py-3 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                    id="password"
-                    type="password"
-                    placeholder="Mật khẩu"
-                    value={accSignup.password}
-                    onChange={(e) => {
-                      setAccSignup({ ...accSignup, password: e.target.value });
-                    }}
-                  />
-                </div>
-                <div>
-                  <button
-                    className="bg-red-500 mt-4 w-full hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline"
-                    type="button"
-                    onClick={signup}
-                  >
-                    Đăng kí
-                  </button>
-                </div>
+              <form>
+                {step === 1 ? (
+                  <>
+                    <div className="mb-4">
+                      <input
+                        className="border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="username"
+                        type="text"
+                        placeholder="Username"
+                        value={accSignup.username}
+                        onChange={(e) => {
+                          setAccSignup({
+                            ...accSignup,
+                            username: e.target.value,
+                          });
+                        }}
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <input
+                        className="border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="email"
+                        type="text"
+                        placeholder="Email"
+                        value={accSignup.email}
+                        onChange={(e) => {
+                          setAccSignup({ ...accSignup, email: e.target.value });
+                        }}
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <input
+                        className="border rounded-lg w-full py-3 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                        id="password"
+                        type="password"
+                        placeholder="Mật khẩu"
+                        value={accSignup.password}
+                        onChange={(e) => {
+                          setAccSignup({
+                            ...accSignup,
+                            password: e.target.value,
+                          });
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <button
+                        className="bg-red-500 mt-4 w-full hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline"
+                        type="button"
+                        onClick={() => setStep(step + 1)}
+                      >
+                        Next
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="mb-4">
+                      <input
+                        className="border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="username"
+                        type="text"
+                        placeholder="Username"
+                        value={accSignup.username}
+                        onChange={(e) => {
+                          setAccSignup({
+                            ...accSignup,
+                            username: e.target.value,
+                          });
+                        }}
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <input
+                        className="border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="email"
+                        type="text"
+                        placeholder="Email"
+                        value={accSignup.email}
+                        onChange={(e) => {
+                          setAccSignup({ ...accSignup, email: e.target.value });
+                        }}
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <input
+                        className="border rounded-lg w-full py-3 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                        id="password"
+                        type="password"
+                        placeholder="Mật khẩu"
+                        value={accSignup.password}
+                        onChange={(e) => {
+                          setAccSignup({
+                            ...accSignup,
+                            password: e.target.value,
+                          });
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <button
+                        className="bg-red-500 mt-4 w-full hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline"
+                        type="button"
+                        onClick={signup}
+                      >
+                        Đăng ký
+                      </button>
+                    </div>
+                  </>
+                )}
               </form>
-              <div className="text-center font-bold my-6">
-                Đã là thành viên?{" "}
-                <a
-                  className="hover:text-indigo-600 cursor-pointer"
-                  onClick={() => {
-                    closeModal();
-                    setIsOpenLogin(true);
-                  }}
-                >
-                  Đăng nhập
-                </a>
-              </div>
+              {step === 1 && (
+                <div className="text-center font-bold my-6">
+                  Đã là thành viên?{" "}
+                  <a
+                    className="hover:text-indigo-600 cursor-pointer"
+                    onClick={() => {
+                      closeModal();
+                      setIsOpenLogin(true);
+                    }}
+                  >
+                    Đăng nhập
+                  </a>
+                </div>
+              )}
             </div>
           </Transition.Child>
         </div>

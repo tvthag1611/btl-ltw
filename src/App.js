@@ -9,7 +9,9 @@ import PrivateRoute from "./routes/PrivateRoute";
 const Layout = lazy(() => import("./elements/layout/Layout"));
 const Home = lazy(() => import("./components/home/Home"));
 const MyProfile = lazy(() => import("./components/profile/MyProfile"));
-const EditProfile = lazy(() => import("./components/profile/EditProfile/EditProfile"));
+const EditProfile = lazy(() =>
+  import("./components/profile/EditProfile/EditProfile")
+);
 const CreatePicture = lazy(() => import("./components/create/CreatePicture"));
 const DesignDetail = lazy(() => import("./components/design/DesignDetail"));
 const Payment = lazy(() => import("./components/payment/Payment"));
@@ -18,6 +20,7 @@ function App() {
   const [isOpenLogin, setIsOpenLogin] = useState(false);
   const [isOpenSignup, setIsOpenSignup] = useState(false);
   const [isForgetPass, setIsForgetPass] = useState(false);
+  const [isCheckout, setIsCheckout] = useState(false);
 
   const loginValue = {
     isOpenLogin,
@@ -26,6 +29,8 @@ function App() {
     setIsOpenSignup,
     isForgetPass,
     setIsForgetPass,
+    isCheckout,
+    setIsCheckout,
   };
 
   return (
@@ -35,9 +40,9 @@ function App() {
           <Routes>
             <Route path="/" element={<Layout />}>
               <Route path="user/:id" element={<MyProfile />} />
-              <Route path="user-edit/:id" element={<EditProfile />} />
               <Route path="/" element={<Home />} />
               <Route path="" element={<PrivateRoute />}>
+                <Route path="user-edit/:id" element={<EditProfile />} />
                 <Route path="create" element={<CreatePicture />} />
                 <Route path="checkout/:id" element={<Payment />} />
               </Route>

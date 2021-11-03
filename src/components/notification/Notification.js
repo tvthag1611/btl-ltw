@@ -10,16 +10,20 @@ import moment from "moment";
 
 const DropdownNotification = ({ notis, setIsShow }) => {
   const navigate = useNavigate();
-  const onClickNoti = async (idPost, idNoti) => {
+  const onClickNoti = async (noti) => {
     const formData = new FormData();
-    formData.append("notiID", idNoti);
+    formData.append("notiID", noti.id);
     await axios.post("/noti/viewAction", formData, {
       headers: {
         Authorization: `Bearer ${getToken()}`,
       },
     });
     setIsShow(false);
-    navigate(`/post/${idPost}`);
+    if (noti.type === "followed") {
+      navigate(`/user/${noti.from.id}`);
+    } else {
+      navigate(`/post/${noti.post.idPost}`);
+    }
   };
   return (
     <div className="w-72 bg-white shadow-lg rounded-lg p-2 pt-0 notification">
@@ -31,8 +35,8 @@ const DropdownNotification = ({ notis, setIsShow }) => {
           isViewed={noti?.isViewed}
           noti={noti?.description}
           time={moment(noti?.timeNoti).fromNow()}
-          img={noti?.post.urlPicture}
-          onClick={() => onClickNoti(noti?.post.idPost, noti.id)}
+          img={noti?.type !== "followed" ? noti?.post.urlPicture : ""}
+          onClick={() => onClickNoti(noti)}
         />
       ))}
     </div>

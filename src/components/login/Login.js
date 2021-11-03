@@ -2,7 +2,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { message } from "antd";
 import axios from "axios";
 import { Fragment, useContext, useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import Logo from "../../assets/logo/logo.svg";
 import LoginContext from "../../context/loginContext";
 import { setUserLocal } from "../../utils/Common";
@@ -17,6 +17,7 @@ export default function Login({ isOpen, setIsOpen }) {
   }
 
   let navigate = useNavigate();
+  const { pathname } = useLocation();
 
   const { setIsOpenSignup, setIsForgetPass } = useContext(LoginContext);
 
@@ -37,7 +38,7 @@ export default function Login({ isOpen, setIsOpen }) {
         message.success("Login success");
         setUserLocal(response.data);
         closeModal();
-        navigate("/");
+        navigate(pathname);
         resetForm();
       } else {
         message.error("Username hoặc password chưa đúng !");

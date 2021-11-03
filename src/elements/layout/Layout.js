@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { Outlet } from "react-router";
 import ForgetPassword from "../../components/login/ForgetPassword";
 import Login from "../../components/login/Login";
+import Payment from "../../components/payment/Payment";
 import Signup from "../../components/signup/SignUp";
 import LoginContext from "../../context/loginContext";
 import AddNewBtn from "../button/AddNewBtn";
@@ -16,6 +17,8 @@ export default function Layout() {
     setIsOpenSignup,
     isForgetPass,
     setIsForgetPass,
+    setIsCheckout,
+    isCheckout,
   } = useContext(LoginContext);
 
   return (
@@ -27,6 +30,7 @@ export default function Layout() {
         <Login isOpen={isOpenLogin} setIsOpen={setIsOpenLogin} />
         <Signup isOpen={isOpenSignup} setIsOpen={setIsOpenSignup} />
         <ForgetPassword isOpen={isForgetPass} setIsOpen={setIsForgetPass} />
+        <Payment isOpen={isCheckout} setIsOpen={setIsCheckout} />
         <AddNewBtn />
       </div>
     </div>

@@ -1,5 +1,7 @@
-import { Tabs } from "antd";
+import { EditOutlined } from "@ant-design/icons";
+import { Button, Tabs } from "antd";
 import React from "react";
+import { useNavigate } from "react-router";
 import cover from "../../assets/profile/anhbia.png";
 import Picture from "../../elements/picture/Picture";
 import "./MyProfile.css";
@@ -50,16 +52,8 @@ const fakeImg = [
   },
 ];
 
-const fakeAlbum = [
-  {
-    titleAlbum: "abc",
-    urlPicture:
-      "https://upload.wikimedia.org/wikipedia/vi/1/1d/N%C6%A1i_n%C3%A0y_c%C3%B3_anh_-_Single_Cover.jpg",
-    idAlbum: 1,
-  },
-];
-
 export default function MyProfile() {
+  const navigate = useNavigate();
   return (
     <div className="pb-5">
       <div className="flex flex-col image">
@@ -77,7 +71,14 @@ export default function MyProfile() {
             />
           </div>
           <div className="info">
-            <div className="name">Phuong Thao Nguyen</div>
+            <div className="name">
+              Phuong Thao Nguyen{" "}
+              <EditOutlined
+                className="ml-3 cursor-pointer"
+                style={{ color: "blue" }}
+                onClick={() => navigate(`/user-edit/2`)}
+              />
+            </div>
             <div className="des">
               Our mission is to inspire, educate and help others to become
               professional and successful designers.

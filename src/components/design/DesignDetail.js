@@ -7,7 +7,7 @@ import {
   SendOutlined,
 } from "@ant-design/icons";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import MyButton from "../../elements/button/MyButton";
 import { message, Tag } from "antd";
@@ -15,10 +15,14 @@ import "../create/CreatePicture.css";
 import "./DesignDetail.css";
 import { getToken, getUserID } from "../../utils/Common";
 import moment from "moment";
+import LoginContext from "../../context/loginContext";
+import Picture from "../../elements/picture/Picture";
 
 export default function DesignDetail() {
   const [design, setDesign] = useState(null);
   const [comments, setComments] = useState([]);
+  const [comment, setComment] = useState("");
+  const [followed, setFollowed] = useState(false);
   const { id } = useParams();
   const idCurrent = Number(getUserID());
   const [isLike, setIsLike] = useState(
@@ -49,47 +53,150 @@ export default function DesignDetail() {
   useEffect(() => {
     getDetailDesign();
     getCommentDesign();
-  }, []);
+  }, [id]);
+
+  const { setIsOpenLogin, setIsCheckout } = useContext(LoginContext);
 
   const handelLove = async () => {
-    if (!isLike) {
-      const formData = new FormData();
-      formData.append("postID", id);
-      formData.append("actionType", "like");
-      const res = await axios.post("/post/likeaction", formData, {
-        headers: {
-          Authorization: `Bearer ${getToken()}`,
-        },
-      });
-      if (res.status == 200 && res.statusText == "OK") {
-        setIsLike(true);
-        setDesign({
-          ...design,
-          loveCount: design.loveCount + 1,
-          notiFromUsers: [...design.notiFromUsers, idCurrent],
+    const isLogin = getToken();
+    if (isLogin) {
+      if (!isLike) {
+        const formData = new FormData();
+        formData.append("postID", id);
+        formData.append("actionType", "like");
+        const res = await axios.post("/post/likeaction", formData, {
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          },
         });
+        if (res.status == 200 && res.statusText == "OK") {
+          setIsLike(true);
+          setDesign({
+            ...design,
+            loveCount: design.loveCount + 1,
+            notiFromUsers: [...design.notiFromUsers, idCurrent],
+          });
+        }
+      } else {
+        const formData = new FormData();
+        formData.append("postID", id);
+        formData.append("actionType", "dislike");
+        const res = await axios.post("/post/likeaction", formData, {
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          },
+        });
+        if (res.status == 200 && res.statusText == "OK") {
+          setIsLike(false);
+          setDesign({
+            ...design,
+            loveCount: design.loveCount - 1,
+            notiFromUsers: design.notiFromUsers.filter(
+              (noti) => noti !== idCurrent
+            ),
+          });
+        }
       }
     } else {
+      setIsOpenLogin(true);
+    }
+  };
+
+  const onFollow = async () => {
+    const isLogin = getToken();
+    if (isLogin) {
       const formData = new FormData();
-      formData.append("postID", id);
-      formData.append("actionType", "dislike");
-      const res = await axios.post("/post/likeaction", formData, {
+      formData.append("usernameAdded", design.userCreate);
+      const res = await axios.post("/follow/followAnotherUser", formData, {
         headers: {
-          Authorization: `Bearer ${getToken()}`,
+          Authorization: `Bearer ${isLogin}`,
         },
       });
       if (res.status == 200 && res.statusText == "OK") {
-        setIsLike(false);
-        setDesign({
-          ...design,
-          loveCount: design.loveCount - 1,
-          notiFromUsers: design.notiFromUsers.filter(
-            (noti) => noti !== idCurrent
-          ),
+        setFollowed(true);
+      }
+    } else {
+      setIsOpenLogin(true);
+    }
+  };
+
+  const onComment = async (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const isLogin = getToken();
+      if (isLogin) {
+        const formData = new FormData();
+        formData.append("postID", id);
+        formData.append("userID", getUserID());
+        formData.append("comment", comment);
+        const res = await axios.post("/post/commentAction", formData, {
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          },
         });
+        if (res.status == 200 && res.statusText == "OK") {
+          setComments([...comments, res.data]);
+        }
+        setComment("");
+      } else {
+        setIsOpenLogin(true);
       }
     }
   };
+
+  const onCheckout = () => {
+    const isLogin = getToken();
+    if (isLogin) {
+      setIsCheckout(true);
+    } else {
+      setIsOpenLogin(true);
+    }
+  };
+
+  const fakeImg = [
+    {
+      titlePost: "anc",
+      urlPicture:
+        "https://upload.wikimedia.org/wikipedia/vi/1/1d/N%C6%A1i_n%C3%A0y_c%C3%B3_anh_-_Single_Cover.jpg",
+      idPost: 1,
+    },
+    {
+      titlePost: "anc",
+      urlPicture:
+        "https://upload.wikimedia.org/wikipedia/vi/1/1d/N%C6%A1i_n%C3%A0y_c%C3%B3_anh_-_Single_Cover.jpg",
+      idPost: 1,
+    },
+    {
+      titlePost: "anc",
+      urlPicture:
+        "https://upload.wikimedia.org/wikipedia/vi/1/1d/N%C6%A1i_n%C3%A0y_c%C3%B3_anh_-_Single_Cover.jpg",
+      idPost: 1,
+    },
+    {
+      titlePost: "anc",
+      urlPicture:
+        "https://upload.wikimedia.org/wikipedia/vi/1/1d/N%C6%A1i_n%C3%A0y_c%C3%B3_anh_-_Single_Cover.jpg",
+      idPost: 1,
+    },
+    {
+      titlePost: "anc",
+      urlPicture:
+        "https://upload.wikimedia.org/wikipedia/vi/1/1d/N%C6%A1i_n%C3%A0y_c%C3%B3_anh_-_Single_Cover.jpg",
+      idPost: 1,
+    },
+    {
+      titlePost: "anc",
+      urlPicture:
+        "https://upload.wikimedia.org/wikipedia/vi/1/1d/N%C6%A1i_n%C3%A0y_c%C3%B3_anh_-_Single_Cover.jpg",
+      idPost: 1,
+    },
+    {
+      titlePost: "anc",
+      urlPicture:
+        "https://upload.wikimedia.org/wikipedia/vi/1/1d/N%C6%A1i_n%C3%A0y_c%C3%B3_anh_-_Single_Cover.jpg",
+      idPost: 1,
+    },
+  ];
 
   return (
     <div className="py-5">
@@ -121,11 +228,17 @@ export default function DesignDetail() {
                   <p className="m-0">1k người theo dõi</p>
                 </div>
               </div>
-              <MyButton className="btn-red">Theo dõi</MyButton>
+              <MyButton
+                className="btn-red"
+                onClick={onFollow}
+                disabled={followed}
+              >
+                {followed ? "Đang theo dõi" : "Theo dõi"}
+              </MyButton>
             </div>
             <h2 className="text-xl font-bold">{design?.titlePost}</h2>
             <p>{design?.descriptionPost}</p>
-            {design?.tags.map((tag) => (
+            {design?.tags?.map((tag) => (
               <Tag color="blue">{tag}</Tag>
             ))}
             <div className="text-3xl">
@@ -145,23 +258,22 @@ export default function DesignDetail() {
               <SendOutlined className="cursor-pointer" />
             </div>
             <p>{design?.loveCount} lượt thích</p>
-            <a
-              href={design?.price === 0 ? design?.urlDesign : "#"}
-              className={`block w-28 h-10 flex items-center justify-center rounded-full text-white hover:text-white ${
-                design?.price === 0
-                  ? "bg-green-500 hover:bg-green-600"
-                  : "bg-yellow-500 hover:bg-yellow-600"
-              }`}
-              download={design?.price === 0}
-              onClick={() => {
-                if (design.price > 0) {
-                  navigate(`/checkout/${id}`);
-                }
-              }}
-            >
-              <DownloadOutlined className="mr-2" />{" "}
-              {design?.price === 0 ? "Free" : `${design?.price}đ`}
-            </a>
+            {design?.price === 0 ? (
+              <a
+                href={design?.urlDesign}
+                className="block w-28 h-10 flex items-center justify-center rounded-full text-white hover:text-white bg-green-500 hover:bg-green-600"
+                download={design?.price === 0}
+              >
+                <DownloadOutlined className="mr-2" /> Free
+              </a>
+            ) : (
+              <a
+                className="block w-28 h-10 flex items-center justify-center rounded-full text-white hover:text-white bg-yellow-500 hover:bg-yellow-600"
+                onClick={onCheckout}
+              >
+                <DownloadOutlined className="mr-2" /> {`${design?.price}đ`}
+              </a>
+            )}
             <h3 className="text-lg font-bold my-4">Nhận xét</h3>
             {comments.map((cmt) => (
               <div>
@@ -187,11 +299,84 @@ export default function DesignDetail() {
                   type="text"
                   placeholder="Thêm nhận xét"
                   name="comment"
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  onKeyDown={onComment}
                 />
               </div>
             </div>
           </div>
         </form>
+      </div>
+      <h3 className="font-bold text-lg mt-10 mb-4 text-center">
+        Thêm các thể loại tương tự
+      </h3>
+      <div className="home flex">
+        <div className="flex flex-col">
+          {fakeImg.map((post, index) => {
+            if (index % 5 === 0) {
+              return (
+                <Picture
+                  title={post.titlePost}
+                  thumnail={post.urlPicture}
+                  id={post.idPost}
+                />
+              );
+            }
+          })}
+        </div>
+        <div className="flex flex-col">
+          {fakeImg.map((post, index) => {
+            if (index % 5 === 1) {
+              return (
+                <Picture
+                  title={post.titlePost}
+                  thumnail={post.urlPicture}
+                  id={post.idPost}
+                />
+              );
+            }
+          })}
+        </div>
+        <div className="flex flex-col">
+          {fakeImg.map((post, index) => {
+            if (index % 5 === 2) {
+              return (
+                <Picture
+                  title={post.titlePost}
+                  thumnail={post.urlPicture}
+                  id={post.idPost}
+                />
+              );
+            }
+          })}
+        </div>
+        <div className="flex flex-col">
+          {fakeImg.map((post, index) => {
+            if (index % 5 === 3) {
+              return (
+                <Picture
+                  title={post.titlePost}
+                  thumnail={post.urlPicture}
+                  id={post.idPost}
+                />
+              );
+            }
+          })}
+        </div>
+        <div className="flex flex-col">
+          {fakeImg.map((post, index) => {
+            if (index % 5 === 4) {
+              return (
+                <Picture
+                  title={post.titlePost}
+                  thumnail={post.urlPicture}
+                  id={post.idPost}
+                />
+              );
+            }
+          })}
+        </div>
       </div>
     </div>
   );
