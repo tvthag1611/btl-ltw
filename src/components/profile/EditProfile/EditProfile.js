@@ -1,5 +1,6 @@
-import { Button, Tabs } from "antd";
+import { Tabs } from "antd";
 import BaseProfile from "./BaseProfile";
+import Setting from "./Setting";
 const { TabPane } = Tabs;
 
 export default function EditProfile() {
@@ -10,7 +11,7 @@ export default function EditProfile() {
           <BaseProfile />
         </TabPane>
         <TabPane tab="Cài đặt tài khoản" key="2">
-          Content of Tab Pane 2
+          <Setting />
         </TabPane>
       </Tabs>
     </div>

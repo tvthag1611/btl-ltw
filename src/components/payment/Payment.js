@@ -10,8 +10,6 @@ export default function Payment({ isOpen, setIsOpen }) {
   const [design, setDesign] = useState(null);
   const [recieved, setRecieved] = useState(false);
   const { id } = useParams();
-  const idCurrent = Number(getUserID());
-  const navigate = useNavigate();
 
   const getDetailDesign = async () => {
     const res = await axios.get(`/post/${id}`);
@@ -24,7 +22,7 @@ export default function Payment({ isOpen, setIsOpen }) {
 
   useEffect(() => {
     getDetailDesign();
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     if (isOpen) {
