@@ -13,10 +13,17 @@ import MyButton from "../../elements/button/MyButton";
 import { message, Tag } from "antd";
 import "../create/CreatePicture.css";
 import "./DesignDetail.css";
+import { getToken, getUserID } from "../../utils/Common";
+import moment from "moment";
 
 export default function DesignDetail() {
   const [design, setDesign] = useState(null);
+  const [comments, setComments] = useState([]);
   const { id } = useParams();
+  const idCurrent = Number(getUserID());
+  const [isLike, setIsLike] = useState(
+    design?.notiFromUsers?.indexOf(idCurrent) !== -1
+  );
   const navigate = useNavigate();
 
   const getDetailDesign = async () => {
@@ -24,9 +31,65 @@ export default function DesignDetail() {
     setDesign(res.data);
   };
 
+  const getCommentDesign = async () => {
+    const res = await axios.get(`/post/getAllCommentByPost?postID=${id}`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    });
+    setComments(res.data);
+  };
+
+  useEffect(() => {
+    const like = design?.notiFromUsers?.indexOf(idCurrent) !== -1;
+    console.log(like);
+    setIsLike(like);
+  }, [design, idCurrent]);
+
   useEffect(() => {
     getDetailDesign();
+    getCommentDesign();
   }, []);
+
+  const handelLove = async () => {
+    if (!isLike) {
+      const formData = new FormData();
+      formData.append("postID", id);
+      formData.append("actionType", "like");
+      const res = await axios.post("/post/likeaction", formData, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      });
+      if (res.status == 200 && res.statusText == "OK") {
+        setIsLike(true);
+        setDesign({
+          ...design,
+          loveCount: design.loveCount + 1,
+          notiFromUsers: [...design.notiFromUsers, idCurrent],
+        });
+      }
+    } else {
+      const formData = new FormData();
+      formData.append("postID", id);
+      formData.append("actionType", "dislike");
+      const res = await axios.post("/post/likeaction", formData, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      });
+      if (res.status == 200 && res.statusText == "OK") {
+        setIsLike(false);
+        setDesign({
+          ...design,
+          loveCount: design.loveCount - 1,
+          notiFromUsers: design.notiFromUsers.filter(
+            (noti) => noti !== idCurrent
+          ),
+        });
+      }
+    }
+  };
 
   return (
     <div className="py-5">
@@ -63,15 +126,19 @@ export default function DesignDetail() {
             <h2 className="text-xl font-bold">{design?.titlePost}</h2>
             <p>{design?.descriptionPost}</p>
             {design?.tags.map((tag) => (
-              <Tag>{tag}</Tag>
+              <Tag color="blue">{tag}</Tag>
             ))}
             <div className="text-3xl">
-              {design?.loveCount === 0 ? (
-                <HeartOutlined className="mr-5 cursor-pointer" />
+              {!isLike ? (
+                <HeartOutlined
+                  className="mr-5 cursor-pointer"
+                  onClick={handelLove}
+                />
               ) : (
                 <HeartFilled
                   className="mr-5 cursor-pointer"
                   style={{ color: "red" }}
+                  onClick={handelLove}
                 />
               )}
               <NotificationOutlined className="mr-5 cursor-pointer" />
@@ -88,7 +155,7 @@ export default function DesignDetail() {
               download={design?.price === 0}
               onClick={() => {
                 if (design.price > 0) {
-                  message.warning("Thanh toán chưa mà đòi tải !");
+                  navigate(`/checkout/${id}`);
                 }
               }}
             >
@@ -96,6 +163,15 @@ export default function DesignDetail() {
               {design?.price === 0 ? "Free" : `${design?.price}đ`}
             </a>
             <h3 className="text-lg font-bold my-4">Nhận xét</h3>
+            {comments.map((cmt) => (
+              <div>
+                <p className="mb-0">
+                  <strong className="mr-3">{cmt.userComment.fullname}</strong>
+                  {moment(cmt.timeCreated).fromNow()}
+                </p>
+                <p>{cmt.comment}</p>
+              </div>
+            ))}
             <div className="flex flex-row items-center">
               <img
                 src="https://upload.wikimedia.org/wikipedia/vi/1/1d/N%C6%A1i_n%C3%A0y_c%C3%B3_anh_-_Single_Cover.jpg"

@@ -18,7 +18,7 @@ export default function Login({ isOpen, setIsOpen }) {
 
   let navigate = useNavigate();
 
-  const { setIsOpenSignup } = useContext(LoginContext);
+  const { setIsOpenSignup, setIsForgetPass } = useContext(LoginContext);
 
   const resetForm = () => {
     setAccLogin({
@@ -33,14 +33,14 @@ export default function Login({ isOpen, setIsOpen }) {
 
       console.log(response);
 
-      if (response.data && response.data.status === "success") {
+      if (response.status == 200 && response.statusText === "OK") {
         message.success("Login success");
-        setUserLocal(response.data.data);
+        setUserLocal(response.data);
         closeModal();
         navigate("/");
         resetForm();
       } else {
-        throw response.data.mess;
+        message.error("Username hoặc password chưa đúng !");
       }
     } catch (e) {
       message.error(e.message);
@@ -121,7 +121,14 @@ export default function Login({ isOpen, setIsOpen }) {
                       setAccLogin({ ...accLogin, password: e.target.value });
                     }}
                   />
-                  <a href="#" className="font-bold hover:text-indigo-600">
+                  <a
+                    href="#"
+                    className="font-bold hover:text-indigo-600"
+                    onClick={() => {
+                      closeModal();
+                      setIsForgetPass(true);
+                    }}
+                  >
                     Quên mật khẩu?
                   </a>
                 </div>
@@ -135,26 +142,6 @@ export default function Login({ isOpen, setIsOpen }) {
                   </button>
                 </div>
               </form>
-
-              <div className="text-center mt-3 mb-3 font-bold">Hoặc</div>
-
-              <div>
-                <button
-                  className="bg-blue-500 w-full hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline"
-                  type="button"
-                >
-                  Sign in with Facebook
-                </button>
-              </div>
-
-              <div>
-                <button
-                  className="border-2 border-gray-300 bg-white mt-4 w-full hover:border-gray-600 text-black font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline"
-                  type="button"
-                >
-                  Sign in with Google
-                </button>
-              </div>
               <div className="text-center font-bold my-6">
                 Chưa tham gia Hahahihi?{" "}
                 <a

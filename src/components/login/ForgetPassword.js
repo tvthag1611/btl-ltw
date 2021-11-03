@@ -1,16 +1,16 @@
-import { Dialog, Transition } from "@headlessui/react";
 import { message } from "antd";
+import React, { Fragment, useContext, useState } from "react";
+import { Dialog, Transition } from "@headlessui/react";
 import axios from "axios";
-import { Fragment, useContext, useState } from "react";
 import Logo from "../../assets/logo/logo.svg";
 import LoginContext from "../../context/loginContext";
 
-export default function Signup({ isOpen, setIsOpen }) {
-  const [accSignup, setAccSignup] = useState({
+export default function ForgetPassword({ isOpen, setIsOpen }) {
+  const [accForget, setAccForget] = useState({
     username: "",
     email: "",
-    password: "",
   });
+  const [loading, setLoading] = useState(false);
   function closeModal() {
     setIsOpen(false);
   }
@@ -18,19 +18,20 @@ export default function Signup({ isOpen, setIsOpen }) {
   const { setIsOpenLogin } = useContext(LoginContext);
 
   const resetForm = () => {
-    setAccSignup({
+    setAccForget({
       username: "",
       email: "",
-      password: "",
     });
   };
 
-  const signup = async () => {
+  const forget = async () => {
     try {
-      const response = await axios.post("/user/registeruser", accSignup);
+      setLoading(true);
+      const response = await axios.post("/user/forgetPassword", accForget);
 
       if (response.statusText == "OK" && response.status == 200) {
-        message.success("Signup success");
+        setLoading(false);
+        message.success(response.data.mess);
         closeModal();
         setIsOpenLogin(true);
         resetForm();
@@ -38,17 +39,17 @@ export default function Signup({ isOpen, setIsOpen }) {
         throw response.data.mess;
       }
     } catch (error) {
+      setLoading(false);
       message.error(error.message);
     }
   };
 
-  const key_signup = (e) => {
+  const key_forget = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      signup();
+      forget();
     }
   };
-
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog
@@ -90,42 +91,30 @@ export default function Signup({ isOpen, setIsOpen }) {
                 className="text-xl text-center font-medium leading-6 text-gray-900 mb-4"
               >
                 <img src={Logo} alt="" className="h-7 w-7 mx-auto mb-4" />
-                Đăng ký
+                Quên mật khẩu
               </Dialog.Title>
-              <form onKeyDown={key_signup}>
+              <form onKeyDown={key_forget}>
                 <div className="mb-4">
                   <input
                     className="border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     id="username"
                     type="text"
                     placeholder="Username"
-                    value={accSignup.username}
+                    value={accForget.username}
                     onChange={(e) => {
-                      setAccSignup({ ...accSignup, username: e.target.value });
-                    }}
-                  />
-                </div>
-                <div className="mb-4">
-                  <input
-                    className="border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="email"
-                    type="text"
-                    placeholder="Email"
-                    value={accSignup.email}
-                    onChange={(e) => {
-                      setAccSignup({ ...accSignup, email: e.target.value });
+                      setAccForget({ ...accForget, username: e.target.value });
                     }}
                   />
                 </div>
                 <div className="mb-4">
                   <input
                     className="border rounded-lg w-full py-3 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                    id="password"
-                    type="password"
-                    placeholder="Mật khẩu"
-                    value={accSignup.password}
+                    id="email"
+                    type="email"
+                    placeholder="Email"
+                    value={accForget.email}
                     onChange={(e) => {
-                      setAccSignup({ ...accSignup, password: e.target.value });
+                      setAccForget({ ...accForget, email: e.target.value });
                     }}
                   />
                 </div>
@@ -133,24 +122,13 @@ export default function Signup({ isOpen, setIsOpen }) {
                   <button
                     className="bg-red-500 mt-4 w-full hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline"
                     type="button"
-                    onClick={signup}
+                    onClick={forget}
+                    disabled={loading}
                   >
-                    Đăng kí
+                    {loading ? "Đang gửi mail ..." : "Nhận lại"}
                   </button>
                 </div>
               </form>
-              <div className="text-center font-bold my-6">
-                Đã là thành viên?{" "}
-                <a
-                  className="hover:text-indigo-600 cursor-pointer"
-                  onClick={() => {
-                    closeModal();
-                    setIsOpenLogin(true);
-                  }}
-                >
-                  Đăng nhập
-                </a>
-              </div>
             </div>
           </Transition.Child>
         </div>

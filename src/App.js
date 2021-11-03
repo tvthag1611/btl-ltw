@@ -12,16 +12,20 @@ const MyProfile = lazy(() => import("./components/profile/MyProfile"));
 const EditProfile = lazy(() => import("./components/profile/EditProfile/EditProfile"));
 const CreatePicture = lazy(() => import("./components/create/CreatePicture"));
 const DesignDetail = lazy(() => import("./components/design/DesignDetail"));
+const Payment = lazy(() => import("./components/payment/Payment"));
 
 function App() {
   const [isOpenLogin, setIsOpenLogin] = useState(false);
   const [isOpenSignup, setIsOpenSignup] = useState(false);
+  const [isForgetPass, setIsForgetPass] = useState(false);
 
   const loginValue = {
     isOpenLogin,
     setIsOpenLogin,
     isOpenSignup,
     setIsOpenSignup,
+    isForgetPass,
+    setIsForgetPass,
   };
 
   return (
@@ -35,6 +39,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="" element={<PrivateRoute />}>
                 <Route path="create" element={<CreatePicture />} />
+                <Route path="checkout/:id" element={<Payment />} />
               </Route>
               <Route path="post/:id" element={<DesignDetail />} />
             </Route>
