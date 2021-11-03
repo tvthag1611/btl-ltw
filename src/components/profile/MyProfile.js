@@ -1,9 +1,10 @@
 import { EditOutlined } from "@ant-design/icons";
 import { Button, Tabs } from "antd";
 import React from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import cover from "../../assets/profile/anhbia.png";
 import Picture from "../../elements/picture/Picture";
+import { getUserID } from "../../utils/Common";
 import "./MyProfile.css";
 const { TabPane } = Tabs;
 
@@ -54,6 +55,7 @@ const fakeImg = [
 
 export default function MyProfile() {
   const navigate = useNavigate();
+  const { id } = useParams();
   return (
     <div className="pb-5">
       <div className="flex flex-col image">
@@ -73,11 +75,13 @@ export default function MyProfile() {
           <div className="info">
             <div className="name">
               Phuong Thao Nguyen{" "}
-              <EditOutlined
-                className="ml-3 cursor-pointer"
-                style={{ color: "blue" }}
-                onClick={() => navigate(`/user-edit/2`)}
-              />
+              {getUserID() == id && (
+                <EditOutlined
+                  className="ml-3 cursor-pointer"
+                  style={{ color: "blue" }}
+                  onClick={() => navigate(`/user-edit/2`)}
+                />
+              )}
             </div>
             <div className="des">
               Our mission is to inspire, educate and help others to become
@@ -90,7 +94,7 @@ export default function MyProfile() {
           <div className="tab mb-4">
             <Tabs defaultActiveKey="1" centered>
               <TabPane tab="Đã tạo" key="1">
-                <div className="flex justify-between px-12">
+                <div className="flex flex-row flex-wrap justify-between px-12">
                   <div className="flex flex-col">
                     {fakeImg.map((post, index) => {
                       if (index % 5 === 0) {
@@ -159,7 +163,7 @@ export default function MyProfile() {
                 </div>
               </TabPane>
               <TabPane tab="Yêu thích" key="2">
-                <div className="flex justify-between px-10">
+                <div className="flex flex-row flex-wrap justify-between px-10">
                   <div className="flex flex-col">
                     {fakeImg.map((post, index) => {
                       if (index % 5 === 0) {

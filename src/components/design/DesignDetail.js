@@ -22,7 +22,7 @@ export default function DesignDetail() {
   const [design, setDesign] = useState(null);
   const [comments, setComments] = useState([]);
   const [comment, setComment] = useState("");
-  const [followed, setFollowed] = useState(false);
+  const [listFollow, setListFollow] = useState([]);
   const { id } = useParams();
   const idCurrent = Number(getUserID());
   const [isLike, setIsLike] = useState(
@@ -44,6 +44,13 @@ export default function DesignDetail() {
     setComments(res.data);
   };
 
+  const getListFollow = async () => {
+    const res = await axios.get(
+      `/follow/getAllFollowerOfUser?username=${"thangvt2"}`
+    );
+    setListFollow(res.data);
+  };
+
   useEffect(() => {
     const like = design?.notiFromUsers?.indexOf(idCurrent) !== -1;
     console.log(like);
@@ -53,6 +60,7 @@ export default function DesignDetail() {
   useEffect(() => {
     getDetailDesign();
     getCommentDesign();
+    getListFollow();
   }, [id]);
 
   const { setIsOpenLogin, setIsCheckout } = useContext(LoginContext);
@@ -106,14 +114,14 @@ export default function DesignDetail() {
     const isLogin = getToken();
     if (isLogin) {
       const formData = new FormData();
-      formData.append("usernameAdded", design.userCreate);
+      formData.append("usernameAdded", design?.userCreateModel?.username);
       const res = await axios.post("/follow/followAnotherUser", formData, {
         headers: {
           Authorization: `Bearer ${isLogin}`,
         },
       });
       if (res.status == 200 && res.statusText == "OK") {
-        setFollowed(true);
+        setListFollow([...listFollow, { id: idCurrent }]);
       }
     } else {
       setIsOpenLogin(true);
@@ -217,23 +225,33 @@ export default function DesignDetail() {
             <div className="flex flex-row items-center justify-between mb-3">
               <div className="flex flex-row items-center">
                 <img
-                  src="https://upload.wikimedia.org/wikipedia/vi/1/1d/N%C6%A1i_n%C3%A0y_c%C3%B3_anh_-_Single_Cover.jpg"
+                  src={design?.userCreateModel?.urlProfilePicture}
                   alt=""
-                  width="40px"
-                  height="40px"
-                  className="mr-3 rounded-full cursor-pointer"
+                  style={{ width: 40, height: 40 }}
+                  className="mr-3 rounded-full cursor-pointer object-cover"
                 />
                 <div className="flex flex-col">
-                  <h3 className="m-0 font-bold">Thao Phuong Nguyen</h3>
-                  <p className="m-0">1k người theo dõi</p>
+                  <h3
+                    className="m-0 font-bold hover:text-blue-500 cursor-pointer"
+                    onClick={() =>
+                      navigate(`/user/${design?.userCreateModel?.id}`)
+                    }
+                  >
+                    {design?.userCreateModel?.fullname}
+                  </h3>
+                  <p className="m-0">{listFollow?.length} người theo dõi</p>
                 </div>
               </div>
               <MyButton
                 className="btn-red"
                 onClick={onFollow}
-                disabled={followed}
+                disabled={
+                  listFollow?.indexOf((fl) => fl.id === idCurrent) !== -1
+                }
               >
-                {followed ? "Đang theo dõi" : "Theo dõi"}
+                {listFollow?.indexOf((fl) => fl.id === idCurrent) !== -1
+                  ? "Đang theo dõi"
+                  : "Theo dõi"}
               </MyButton>
             </div>
             <h2 className="text-xl font-bold">{design?.titlePost}</h2>
