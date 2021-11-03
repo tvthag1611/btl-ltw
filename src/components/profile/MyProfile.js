@@ -81,7 +81,7 @@ export default function MyProfile() {
         <div className="tab mb-4">
           <Tabs defaultActiveKey="1" centered>
             <TabPane tab="Đã tạo" key="1">
-              <div className="flex justify-between px-12">
+              <div className="flex justify-between">
                 <div className="flex flex-col">
                   {fakeImg.map((post, index) => {
                     if (index % 5 === 0) {
@@ -151,7 +151,7 @@ export default function MyProfile() {
 
             </TabPane>
             <TabPane tab="Yêu thích" key="2">
-              <div className="flex justify-between px-10">
+              <div className="flex justify-between">
                 <div className="flex flex-col">
                   {fakeImg.map((post, index) => {
                     if (index % 5 === 0) {
@@ -220,7 +220,7 @@ export default function MyProfile() {
               </div>
             </TabPane>
             <TabPane tab="Album" key="3">
-              <div className="flex justify-between px-10">
+              <div className="flex justify-between">
                 <div className="flex flex-col">
                   {fakeAlbum.map((post, index) => {
                     if (index % 5 === 0) {
