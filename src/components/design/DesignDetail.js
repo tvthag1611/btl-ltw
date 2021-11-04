@@ -7,13 +7,13 @@ import {
   SendOutlined,
 } from "@ant-design/icons";
 import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import MyButton from "../../elements/button/MyButton";
 import { message, Tag } from "antd";
 import "../create/CreatePicture.css";
 import "./DesignDetail.css";
-import { getToken, getUserID } from "../../utils/Common";
+import { getToken, getUser } from "../../utils/Common";
 import moment from "moment";
 import LoginContext from "../../context/loginContext";
 import Picture from "../../elements/picture/Picture";
@@ -23,37 +23,49 @@ export default function DesignDetail() {
   const [comments, setComments] = useState([]);
   const [comment, setComment] = useState("");
   const [listFollow, setListFollow] = useState([]);
+  const [samePosts, setSamePosts] = useState([]);
   const { id } = useParams();
-  const idCurrent = Number(getUserID());
+  const idCurrent = getUser()?.id;
   const [isLike, setIsLike] = useState(
-    design?.notiFromUsers?.indexOf(idCurrent) !== -1
+    getToken() ? design?.notiFromUsers?.indexOf(idCurrent) !== -1 : false
   );
+  const download = useRef(null);
   const navigate = useNavigate();
 
   const getDetailDesign = async () => {
     const res = await axios.get(`/post/${id}`);
-    setDesign(res.data);
+    if (res.status == 200 && res.statusText == "OK") {
+      setDesign(res.data);
+    }
+  };
+
+  const getSamePosts = async () => {
+    const formData = new FormData();
+    design?.tags?.map((tg) => formData.append("tags", tg));
+    const res = await axios.post(`/post/getPostsTag`, formData);
+    if (res.status == 200 && res.statusText == "OK") {
+      setSamePosts(res.data?.filter((po) => po.idPost !== Number(id)));
+    }
   };
 
   const getCommentDesign = async () => {
-    const res = await axios.get(`/post/getAllCommentByPost?postID=${id}`, {
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-      },
-    });
-    setComments(res.data);
+    const res = await axios.get(`/post/getAllCommentByPost?postID=${id}`);
+    if (res.status == 200 && res.statusText == "OK") {
+      setComments(res.data);
+    }
   };
 
   const getListFollow = async () => {
     const res = await axios.get(
       `/follow/getAllFollowerOfUser?username=${"thangvt2"}`
     );
-    setListFollow(res.data);
+    if (res.status == 200 && res.statusText == "OK") {
+      setListFollow(res.data);
+    }
   };
 
   useEffect(() => {
     const like = design?.notiFromUsers?.indexOf(idCurrent) !== -1;
-    console.log(like);
     setIsLike(like);
   }, [design, idCurrent]);
 
@@ -62,6 +74,10 @@ export default function DesignDetail() {
     getCommentDesign();
     getListFollow();
   }, [id]);
+
+  useEffect(() => {
+    getSamePosts();
+  }, [design]);
 
   const { setIsOpenLogin, setIsCheckout } = useContext(LoginContext);
 
@@ -135,7 +151,7 @@ export default function DesignDetail() {
       if (isLogin) {
         const formData = new FormData();
         formData.append("postID", id);
-        formData.append("userID", getUserID());
+        formData.append("userID", idCurrent);
         formData.append("comment", comment);
         const res = await axios.post("/post/commentAction", formData, {
           headers: {
@@ -160,51 +176,6 @@ export default function DesignDetail() {
       setIsOpenLogin(true);
     }
   };
-
-  const fakeImg = [
-    {
-      titlePost: "anc",
-      urlPicture:
-        "https://upload.wikimedia.org/wikipedia/vi/1/1d/N%C6%A1i_n%C3%A0y_c%C3%B3_anh_-_Single_Cover.jpg",
-      idPost: 1,
-    },
-    {
-      titlePost: "anc",
-      urlPicture:
-        "https://upload.wikimedia.org/wikipedia/vi/1/1d/N%C6%A1i_n%C3%A0y_c%C3%B3_anh_-_Single_Cover.jpg",
-      idPost: 1,
-    },
-    {
-      titlePost: "anc",
-      urlPicture:
-        "https://upload.wikimedia.org/wikipedia/vi/1/1d/N%C6%A1i_n%C3%A0y_c%C3%B3_anh_-_Single_Cover.jpg",
-      idPost: 1,
-    },
-    {
-      titlePost: "anc",
-      urlPicture:
-        "https://upload.wikimedia.org/wikipedia/vi/1/1d/N%C6%A1i_n%C3%A0y_c%C3%B3_anh_-_Single_Cover.jpg",
-      idPost: 1,
-    },
-    {
-      titlePost: "anc",
-      urlPicture:
-        "https://upload.wikimedia.org/wikipedia/vi/1/1d/N%C6%A1i_n%C3%A0y_c%C3%B3_anh_-_Single_Cover.jpg",
-      idPost: 1,
-    },
-    {
-      titlePost: "anc",
-      urlPicture:
-        "https://upload.wikimedia.org/wikipedia/vi/1/1d/N%C6%A1i_n%C3%A0y_c%C3%B3_anh_-_Single_Cover.jpg",
-      idPost: 1,
-    },
-    {
-      titlePost: "anc",
-      urlPicture:
-        "https://upload.wikimedia.org/wikipedia/vi/1/1d/N%C6%A1i_n%C3%A0y_c%C3%B3_anh_-_Single_Cover.jpg",
-      idPost: 1,
-    },
-  ];
 
   return (
     <div className="py-5">
@@ -242,17 +213,23 @@ export default function DesignDetail() {
                   <p className="m-0">{listFollow?.length} người theo dõi</p>
                 </div>
               </div>
-              <MyButton
-                className="btn-red"
-                onClick={onFollow}
-                disabled={
-                  listFollow?.indexOf((fl) => fl.id === idCurrent) !== -1
-                }
-              >
-                {listFollow?.indexOf((fl) => fl.id === idCurrent) !== -1
-                  ? "Đang theo dõi"
-                  : "Theo dõi"}
-              </MyButton>
+              {getToken() ? (
+                design?.userCreateModel?.id !== getUser()?.id && (
+                  <MyButton
+                    className="btn-red"
+                    onClick={onFollow}
+                    disabled={listFollow?.find((fl) => fl.id === idCurrent)}
+                  >
+                    {listFollow?.find((fl) => fl.id === idCurrent)
+                      ? "Đang theo dõi"
+                      : "Theo dõi"}
+                  </MyButton>
+                )
+              ) : (
+                <MyButton className="btn-red" onClick={onFollow}>
+                  Theo dõi
+                </MyButton>
+              )}
             </div>
             <h2 className="text-xl font-bold">{design?.titlePost}</h2>
             <p>{design?.descriptionPost}</p>
@@ -278,9 +255,16 @@ export default function DesignDetail() {
             <p>{design?.loveCount} lượt thích</p>
             {design?.price === 0 ? (
               <a
-                href={design?.urlDesign}
+                href={getToken() ? design?.urlDesign : "#"}
                 className="block w-28 h-10 flex items-center justify-center rounded-full text-white hover:text-white bg-green-500 hover:bg-green-600"
-                download={design?.price === 0}
+                ref={download}
+                onClick={() => {
+                  if (!getToken()) {
+                    setIsOpenLogin(true);
+                  } else {
+                    download.current.download = true;
+                  }
+                }}
               >
                 <DownloadOutlined className="mr-2" /> Free
               </a>
@@ -295,21 +279,34 @@ export default function DesignDetail() {
             <h3 className="text-lg font-bold my-4">Nhận xét</h3>
             {comments.map((cmt) => (
               <div>
-                <p className="mb-0">
-                  <strong className="mr-3">{cmt.userComment.fullname}</strong>
-                  {moment(cmt.timeCreated).fromNow()}
-                </p>
-                <p>{cmt.comment}</p>
+                <div className="flex flex-row">
+                  <img
+                    src={cmt.userComment.urlProfilePicture}
+                    alt=""
+                    style={{ width: 40, height: 40 }}
+                    className="mr-3 object-cover rounded-full"
+                  />
+                  <div>
+                    <p className="mb-0">
+                      <strong className="mr-3">
+                        {cmt.userComment.fullname}
+                      </strong>
+                      {moment(cmt.timeCreated).fromNow()}
+                    </p>
+                    <p>{cmt.comment}</p>
+                  </div>
+                </div>
               </div>
             ))}
             <div className="flex flex-row items-center">
-              <img
-                src="https://upload.wikimedia.org/wikipedia/vi/1/1d/N%C6%A1i_n%C3%A0y_c%C3%B3_anh_-_Single_Cover.jpg"
-                alt=""
-                width="40px"
-                height="40px"
-                className="mr-3 rounded-full cursor-pointer"
-              />
+              {getUser()?.urlProfilePicture && (
+                <img
+                  src={getUser()?.urlProfilePicture}
+                  alt=""
+                  style={{ width: 40, height: 40 }}
+                  className="mr-3 rounded-full object-cover"
+                />
+              )}
               <div className="flex flex-col flex-1">
                 <input
                   className="border rounded-full w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -331,7 +328,7 @@ export default function DesignDetail() {
       </h3>
       <div className="home flex">
         <div className="flex flex-col">
-          {fakeImg.map((post, index) => {
+          {samePosts.map((post, index) => {
             if (index % 5 === 0) {
               return (
                 <Picture
@@ -344,7 +341,7 @@ export default function DesignDetail() {
           })}
         </div>
         <div className="flex flex-col">
-          {fakeImg.map((post, index) => {
+          {samePosts.map((post, index) => {
             if (index % 5 === 1) {
               return (
                 <Picture
@@ -357,7 +354,7 @@ export default function DesignDetail() {
           })}
         </div>
         <div className="flex flex-col">
-          {fakeImg.map((post, index) => {
+          {samePosts.map((post, index) => {
             if (index % 5 === 2) {
               return (
                 <Picture
@@ -370,7 +367,7 @@ export default function DesignDetail() {
           })}
         </div>
         <div className="flex flex-col">
-          {fakeImg.map((post, index) => {
+          {samePosts.map((post, index) => {
             if (index % 5 === 3) {
               return (
                 <Picture
@@ -383,7 +380,7 @@ export default function DesignDetail() {
           })}
         </div>
         <div className="flex flex-col">
-          {fakeImg.map((post, index) => {
+          {samePosts.map((post, index) => {
             if (index % 5 === 4) {
               return (
                 <Picture

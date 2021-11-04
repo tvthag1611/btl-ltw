@@ -1,5 +1,5 @@
 import { Badge, Input } from "antd";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   SearchOutlined,
   UserOutlined,
@@ -12,13 +12,14 @@ import LoginContext from "../../../context/loginContext";
 import MyButton from "../../button/MyButton";
 import { Menu, Dropdown } from "antd";
 import "./Header.css";
-import { getToken, removeUserLocal } from "../../../utils/Common";
+import { getToken, getUser, removeUserLocal } from "../../../utils/Common";
 import Search from "../../../components/search/Search";
 import Notification from "../../../components/notification/Notification";
 
 export default function Header() {
   const { setIsOpenLogin } = useContext(LoginContext);
   const isLogin = getToken();
+  const user = getUser();
   let navigate = useNavigate();
 
   const logout = () => {
@@ -30,7 +31,7 @@ export default function Header() {
   const menu = (
     <Menu>
       <Menu.Item icon={<UserOutlined />}>
-        <a href="/user/2">Profile</a>
+        <a href={`/user/${user?.id}`}>Profile</a>
       </Menu.Item>
       <Menu.Item icon={<LogoutOutlined />} onClick={logout}>
         <a>Logout</a>
@@ -43,7 +44,12 @@ export default function Header() {
       className="header fixed items-center flex flex-row w-full border border-0 border-b-1 border-gray-300"
       id="header"
     >
-      <img src={Logo} alt="" width="50px" height="50px" className="mx-3" />
+      <img
+        src={Logo}
+        alt=""
+        style={{ width: 50, height: 50 }}
+        className="mx-3"
+      />
       <MyButton className="mr-3 btn-black" onClick={() => navigate("/")}>
         Trang chủ
       </MyButton>
@@ -66,11 +72,10 @@ export default function Header() {
             getPopupContainer={() => document.getElementById("header")}
           >
             <img
-              src="https://upload.wikimedia.org/wikipedia/vi/1/1d/N%C6%A1i_n%C3%A0y_c%C3%B3_anh_-_Single_Cover.jpg"
+              src={user?.urlProfilePicture}
               alt=""
-              width="40px"
-              height="40px"
-              className="mx-3 rounded-full cursor-pointer"
+              style={{ width: 40, height: 40 }}
+              className="mx-3 rounded-full cursor-pointer object-cover"
             />
           </Dropdown>
         </div>

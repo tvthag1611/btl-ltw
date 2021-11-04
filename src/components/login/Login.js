@@ -32,11 +32,9 @@ export default function Login({ isOpen, setIsOpen }) {
     try {
       const response = await axios.post(`/user/login`, accLogin);
 
-      console.log(response);
-
       if (response.status == 200 && response.statusText === "OK") {
         message.success("Login success");
-        setUserLocal(response.data);
+        await setUserLocal(response.data);
         closeModal();
         navigate(pathname);
         resetForm();

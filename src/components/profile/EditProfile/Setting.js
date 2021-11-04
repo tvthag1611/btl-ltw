@@ -1,6 +1,71 @@
-import { Button, Input } from "antd";
+import { Button, Input, message } from "antd";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router";
+import { getToken } from "../../../utils/Common";
 
 export default function Setting() {
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const [userProfile, setUserProfile] = useState({});
+  const [newPassword, setNewPassword] = useState("");
+
+  console.log(userProfile);
+
+  const getInfoUser = async () => {
+    const res = await axios.get(`/user/detail/${id}`);
+    if (res.status == 200 && res.statusText == "OK") {
+      setUserProfile(res.data);
+    }
+  };
+
+  useEffect(() => {
+    getInfoUser();
+  }, [id]);
+
+  const handleChangeInput = (e) => {
+    setUserProfile({
+      ...userProfile,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleChangePassword = async () => {
+    const res = await axios.post(
+      "/user/changePassword",
+      {
+        password: newPassword,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      }
+    );
+    if (res.status == 200 && res.statusText == "OK") {
+      message.success("Password đã được thay đổi!");
+    } else {
+      message.error("Có lỗi xảy ra!");
+    }
+  };
+
+  const onChangeProfile = async () => {
+    const formData = new FormData();
+    formData.append("email", userProfile?.email);
+    formData.append("address", userProfile?.address);
+    formData.append("phone", userProfile?.phone);
+    const res = await axios.post("/user/changeProfile", formData, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    });
+    if (res.status == 200 && res.statusText == "OK") {
+      message.success("Cập nhật hồ sơ thành công!");
+    } else {
+      message.error("Có lỗi xảy ra!");
+    }
+  };
+
   return (
     <div className="px-14 py-8 w-1/2">
       <h1 className="font-bold text-2xl">Cài đặt tài khoản</h1>
@@ -11,14 +76,36 @@ export default function Setting() {
       <div className="mt-6 w-full">
         <div>Email</div>
         <div>
-          <Input style={{ borderRadius: "50px", height: "41px" }} />
+          <Input
+            style={{ borderRadius: "50px", height: "41px" }}
+            name="email"
+            value={userProfile?.email}
+            onChange={handleChangeInput}
+          />
+        </div>
+      </div>
+
+      <div className="mt-3 w-full">
+        <div>Địa chỉ</div>
+        <div>
+          <Input
+            style={{ borderRadius: "50px", height: "41px" }}
+            name="address"
+            value={userProfile?.address}
+            onChange={handleChangeInput}
+          />
         </div>
       </div>
 
       <div className="mt-3 w-full">
         <div>SĐT</div>
         <div>
-          <Input style={{ borderRadius: "50px", height: "41px" }} />
+          <Input
+            style={{ borderRadius: "50px", height: "41px" }}
+            name="phone"
+            value={userProfile?.phone}
+            onChange={handleChangeInput}
+          />
         </div>
       </div>
 
@@ -59,6 +146,9 @@ export default function Setting() {
               <Input
                 style={{ borderRadius: "50px", height: "41px" }}
                 type="password"
+                name="newPassword"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
               />
             </div>
             <Button
@@ -66,24 +156,11 @@ export default function Setting() {
               shape="round"
               size="large"
               style={{ background: "#bfbfbf", color: "black" }}
+              onClick={handleChangePassword}
             >
               Thay đổi
             </Button>
           </div>
-        </div>
-        <div className="flex mt-12">
-          <div className="mr-6 flex-1">
-            <h1>Xoá tài khoản</h1>
-            <div>Xóa tài khoản và dữ liệu tài khoản của bạn</div>
-          </div>
-          <Button
-            type="primary"
-            shape="round"
-            size="large"
-            style={{ background: "#bfbfbf", color: "black" }}
-          >
-            Xóa tài khoản
-          </Button>
         </div>
         <div className="flex mt-12">
           <div className="mr-6">
@@ -92,11 +169,21 @@ export default function Setting() {
               shape="round"
               size="large"
               style={{ background: "#bfbfbf", color: "black" }}
+              onClick={() => {
+                setNewPassword("");
+                setUserProfile({});
+                navigate(`/user/${id}`);
+              }}
             >
               Hủy
             </Button>
           </div>
-          <Button type="primary" shape="round" size="large">
+          <Button
+            type="primary"
+            shape="round"
+            size="large"
+            onClick={onChangeProfile}
+          >
             Lưu thay đổi
           </Button>
         </div>

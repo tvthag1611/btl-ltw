@@ -60,7 +60,7 @@ export default function Notification() {
 
   useEffect(() => {
     getALlNotis();
-  }, []);
+  });
   const onChangeShow = (visible) => {
     setIsShow(visible);
   };

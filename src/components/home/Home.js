@@ -8,8 +8,9 @@ export default function Home() {
 
   const getALlPosts = async () => {
     const res = await axios.get(`/post/getAllPosts`);
-    console.log(res);
-    setPosts(res.data);
+    if (res.status == 200 && res.statusText == "OK") {
+      setPosts(res.data);
+    }
   };
 
   useEffect(() => {

@@ -1,6 +1,11 @@
-export const getUserID = () => {
-  const userID = localStorage.getItem("userID");
-  return userID;
+import axios from "axios";
+
+export const getUser = () => {
+  const user = localStorage.getItem("user");
+  if (user) {
+    return JSON.parse(user);
+  }
+  return null;
 };
 
 export const getToken = () => {
@@ -9,10 +14,15 @@ export const getToken = () => {
 
 export const removeUserLocal = () => {
   localStorage.removeItem("token");
-  localStorage.removeItem("userID");
+  localStorage.removeItem("user");
 };
 
-export const setUserLocal = ({ token, userID }) => {
+export const setUserLocal = async ({ token, userID }) => {
   localStorage.setItem("token", token);
-  localStorage.setItem("userID", userID);
+  const res = await axios.get(`/user/detail/${userID}`);
+  localStorage.setItem("user", JSON.stringify(res.data));
+};
+
+export const resetUserLocal = (user) => {
+  localStorage.setItem("user", JSON.stringify(user));
 };

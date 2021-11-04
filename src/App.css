@@ -10,3 +10,12 @@ button:disabled:hover {
   background-color: rgb(61, 0, 0);
   cursor: no-drop;
 }
+
+.search {
+  max-height: calc(100vh - 100px);
+  overflow: auto;
+}
+
+.search .search-result {
+  width: 30%;
+}

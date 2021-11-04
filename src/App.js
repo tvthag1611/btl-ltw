@@ -15,6 +15,7 @@ const EditProfile = lazy(() =>
 const CreatePicture = lazy(() => import("./components/create/CreatePicture"));
 const DesignDetail = lazy(() => import("./components/design/DesignDetail"));
 const Payment = lazy(() => import("./components/payment/Payment"));
+const RevievePass = lazy(() => import("./components/login/RevievePass"));
 
 function App() {
   const [isOpenLogin, setIsOpenLogin] = useState(false);
@@ -41,6 +42,7 @@ function App() {
             <Route path="/" element={<Layout />}>
               <Route path="user/:id" element={<MyProfile />} />
               <Route path="/" element={<Home />} />
+              <Route path="/forget-password/" element={<RevievePass />} />
               <Route path="" element={<PrivateRoute />}>
                 <Route path="user-edit/:id" element={<EditProfile />} />
                 <Route path="create" element={<CreatePicture />} />

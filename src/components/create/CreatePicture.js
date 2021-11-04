@@ -8,7 +8,7 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import MyButton from "../../elements/button/MyButton";
-import { getToken } from "../../utils/Common";
+import { getToken, getUser } from "../../utils/Common";
 import "./CreatePicture.css";
 
 const { Option } = Select;
@@ -27,14 +27,24 @@ export default function CreatePicture() {
   });
 
   const [alltag, setAlltag] = useState([]);
+  const [listFollow, setListFollow] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const getAllTags = async () => {
     const res = await axios.get("/tags/getAllTags");
     setAlltag(res.data);
   };
 
+  const getListFollow = async () => {
+    const res = await axios.get(
+      `/follow/getAllFollowerOfUser?username=${"thangvt2"}`
+    );
+    setListFollow(res.data);
+  };
+
   useEffect(() => {
     getAllTags();
+    getListFollow();
   }, []);
 
   const onChangeTag = (value) => {
@@ -75,6 +85,7 @@ export default function CreatePicture() {
   };
 
   const onCreateNewPicture = async () => {
+    setLoading(true);
     const formData = new FormData();
     formData.append("titlePost", postDesignCreate.title);
     formData.append("descriptionPost", postDesignCreate.description);
@@ -88,8 +99,11 @@ export default function CreatePicture() {
       },
     });
     if (res.status === 200 && res.statusText === "OK") {
-      message.success("Tạo Design mới thành công !");
-      navigate("/");
+      setTimeout(() => {
+        setLoading(false);
+        message.success("Tạo Design mới thành công !");
+        navigate("/");
+      }, 10000);
     }
   };
 
@@ -102,8 +116,12 @@ export default function CreatePicture() {
             onClick={() => navigate(-1)}
           />
           <h1>Tạo mới Design</h1>
-          <MyButton className="btn-red" onClick={onCreateNewPicture}>
-            Tạo mới
+          <MyButton
+            className="btn-red"
+            onClick={onCreateNewPicture}
+            disabled={loading}
+          >
+            {loading ? "Đang tạo..." : "Tạo mới"}
           </MyButton>
         </div>
         <form className="flex flex-row">
@@ -129,15 +147,14 @@ export default function CreatePicture() {
           <div className="flex-1">
             <div className="flex flex-row items-center mb-3">
               <img
-                src="https://upload.wikimedia.org/wikipedia/vi/1/1d/N%C6%A1i_n%C3%A0y_c%C3%B3_anh_-_Single_Cover.jpg"
+                src={getUser().urlProfilePicture}
                 alt=""
-                width="40px"
-                height="40px"
-                className="mr-3 rounded-full cursor-pointer"
+                style={{ height: 40, width: 40 }}
+                className="mr-3 rounded-full object-cover"
               />
               <div className="flex flex-col">
-                <h3 className="m-0 font-bold">Thao Phuong Nguyen</h3>
-                <p className="m-0">1k người theo dõi</p>
+                <h3 className="m-0 font-bold">{getUser().fullname}</h3>
+                <p className="m-0">{listFollow?.length} người theo dõi</p>
               </div>
             </div>
             <label htmlFor="newTitle">Tiêu đề</label>
