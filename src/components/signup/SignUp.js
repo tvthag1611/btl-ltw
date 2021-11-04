@@ -1,5 +1,5 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { message } from "antd";
+import { Button, message, Upload } from "antd";
 import axios from "axios";
 import { Fragment, useContext, useState } from "react";
 import Logo from "../../assets/logo/logo.svg";
@@ -12,7 +12,8 @@ export default function Signup({ isOpen, setIsOpen }) {
     password: "",
     fullname: "",
     address: "",
-    dob: "",
+    avatar: null,
+    cover: null,
     phone: "",
   });
 
@@ -31,14 +32,24 @@ export default function Signup({ isOpen, setIsOpen }) {
       password: "",
       fullname: "",
       address: "",
-      dob: "",
+      avatar: null,
+      cover: null,
       phone: "",
     });
   };
 
   const signup = async () => {
     try {
-      const response = await axios.post("/user/registeruser", accSignup);
+      const formData = new FormData();
+      formData.append("urlProfile", accSignup.avatar);
+      formData.append("urlBackground", accSignup.cover);
+      formData.append("username", accSignup.username);
+      formData.append("password", accSignup.password);
+      formData.append("email", accSignup.email);
+      formData.append("fullname", accSignup.fullname);
+      formData.append("address", accSignup.address);
+      formData.append("phone", accSignup.phone);
+      const response = await axios.post("/user/registeruser", formData);
 
       if (response.statusText == "OK" && response.status == 200) {
         message.success("Signup success");
@@ -46,11 +57,32 @@ export default function Signup({ isOpen, setIsOpen }) {
         setIsOpenLogin(true);
         resetForm();
       } else {
-        throw response.data.mess;
+        message.error("Đăng ký không thành công!");
       }
     } catch (error) {
       message.error(error.message);
     }
+  };
+
+  const handleChangeInput = (e) => {
+    setAccSignup({
+      ...accSignup,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleChangeAvatar = ({ file }) => {
+    setAccSignup({
+      ...accSignup,
+      avatar: file.originFileObj,
+    });
+  };
+
+  const handleChangeCover = ({ file }) => {
+    setAccSignup({
+      ...accSignup,
+      cover: file.originFileObj,
+    });
   };
 
   return (
@@ -153,46 +185,92 @@ export default function Signup({ isOpen, setIsOpen }) {
                   </>
                 ) : (
                   <>
-                    <div className="mb-4">
+                    <div className="mt-3">Ảnh</div>
+                    <div className="flex items-center">
+                      <img
+                        src={
+                          accSignup.avatar
+                            ? URL.createObjectURL(accSignup.avatar)
+                            : ""
+                        }
+                        alt=""
+                        style={{ width: 145, height: 145 }}
+                        className="mx-3 rounded-full item object-cover"
+                      />
+                      <Upload
+                        showUploadList={false}
+                        onChange={handleChangeAvatar}
+                      >
+                        <Button
+                          type="primary"
+                          shape="round"
+                          size="large"
+                          style={{ background: "#bfbfbf", color: "black" }}
+                        >
+                          Upload
+                        </Button>
+                      </Upload>
+                    </div>
+                    <div className="mt-3">Ảnh bìa</div>
+                    <div className="flex items-center">
+                      <img
+                        src={
+                          accSignup.cover
+                            ? URL.createObjectURL(accSignup.cover)
+                            : ""
+                        }
+                        alt=""
+                        style={{ width: 145 }}
+                        className="mx-3 item object-cover"
+                      />
+                      <Upload
+                        showUploadList={false}
+                        onChange={handleChangeCover}
+                      >
+                        <Button
+                          type="primary"
+                          shape="round"
+                          size="large"
+                          style={{ background: "#bfbfbf", color: "black" }}
+                        >
+                          Upload
+                        </Button>
+                      </Upload>
+                    </div>
+                    <div className="mt-3">
+                      <label htmlFor="fullname">Họ và tên</label>
                       <input
-                        className="border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="username"
+                        className="border rounded-full w-full py-3 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                        id="fullname"
                         type="text"
-                        placeholder="Username"
-                        value={accSignup.username}
-                        onChange={(e) => {
-                          setAccSignup({
-                            ...accSignup,
-                            username: e.target.value,
-                          });
-                        }}
+                        placeholder="Nhập họ và tên"
+                        name="fullname"
+                        value={accSignup.fullname}
+                        onChange={handleChangeInput}
                       />
                     </div>
-                    <div className="mb-4">
+                    <div className="mt-3">
+                      <label htmlFor="phone">SĐT</label>
                       <input
-                        className="border rounded-lg w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="email"
+                        className="border rounded-full w-full py-3 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                        id="phone"
                         type="text"
-                        placeholder="Email"
-                        value={accSignup.email}
-                        onChange={(e) => {
-                          setAccSignup({ ...accSignup, email: e.target.value });
-                        }}
+                        placeholder="Nhập SĐT"
+                        name="phone"
+                        value={accSignup.phone}
+                        onChange={handleChangeInput}
                       />
                     </div>
-                    <div className="mb-4">
+                    <div className="mt-3">
+                      <label htmlFor="address">Địa chỉ</label>
                       <input
-                        className="border rounded-lg w-full py-3 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                        id="password"
-                        type="password"
-                        placeholder="Mật khẩu"
-                        value={accSignup.password}
-                        onChange={(e) => {
-                          setAccSignup({
-                            ...accSignup,
-                            password: e.target.value,
-                          });
-                        }}
+                        className="border rounded-full w-full py-3 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                        id="address"
+                        type="text"
+                        placeholder="Nhập địa chỉ"
+                        name="address"
+                        value={accSignup.address}
+                        onChange={handleChangeInput}
                       />
                     </div>
                     <div>
