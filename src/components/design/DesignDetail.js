@@ -57,7 +57,7 @@ export default function DesignDetail() {
 
   const getListFollow = async () => {
     const res = await axios.get(
-      `/follow/getAllFollowerOfUser?username=${"thangvt2"}`
+      `/follow/getAllFollowerOfUser?username=${design?.userCreateModel?.username}`
     );
     if (res.status == 200 && res.statusText == "OK") {
       setListFollow(res.data);
@@ -72,11 +72,11 @@ export default function DesignDetail() {
   useEffect(() => {
     getDetailDesign();
     getCommentDesign();
-    getListFollow();
   }, [id]);
 
   useEffect(() => {
     getSamePosts();
+    getListFollow();
   }, [design]);
 
   const { setIsOpenLogin, setIsCheckout } = useContext(LoginContext);
@@ -218,9 +218,9 @@ export default function DesignDetail() {
                   <MyButton
                     className="btn-red"
                     onClick={onFollow}
-                    disabled={listFollow?.find((fl) => fl.id === idCurrent)}
+                    disabled={listFollow?.find((fl) => fl.id == idCurrent)}
                   >
-                    {listFollow?.find((fl) => fl.id === idCurrent)
+                    {listFollow?.find((fl) => fl.id == idCurrent)
                       ? "Đang theo dõi"
                       : "Theo dõi"}
                   </MyButton>
